@@ -1,0 +1,9 @@
+Please act as a logical teacher and solve the logical reasoning problem. Given a context and a question, directly give the answer with the format "\nThe correct option is: A/B/C".
+####
+# Context:
+{{context}}
+# Question:
+{{question}}
+# Options:
+{{options}}
+# Answer:
