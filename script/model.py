@@ -92,7 +92,7 @@ class ModelWrapper():
         return inp, ref, text
         
         
-    def input_explain(self, inps, refs, L=10, b=7, p=4, eps=1e-7):
+    def input_explain(self, inps, refs):
         self.model.eval()
         inps, refs, texts = self.prepare4explain(inps, refs) 
         ids = self.tokenizer(texts, return_tensors="pt")['input_ids']
@@ -102,7 +102,6 @@ class ModelWrapper():
         
         ref = torch.tensor(self.tokenizer.convert_tokens_to_ids(refs)).long()
         obj = probs[0, torch.arange(len(inps) - bias, len(inps) + len(ref)- bias), ref]  
-        confs = obj.cpu().detach().numpy()
         grad = []
         for j in range(len(ref)): 
             zero_grad(self.model, embs)
@@ -117,4 +116,4 @@ class ModelWrapper():
             
             expls = expl.numpy()
 
-        return inps, refs, expls.tolist()
+        return inps, refs, expls

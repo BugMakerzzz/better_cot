@@ -7,3 +7,4 @@ Please act as a logical teacher and reason step by step to solve the logical rea
 # Options:
 {{options}}
 # Reasoning:
+Let's think step by step:

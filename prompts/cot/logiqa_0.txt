@@ -2,11 +2,8 @@ Please act as a logical teacher and reason step by step to solve the logical rea
 ####
 # Context:
 {{context}}
-
 # Question:
 {{question}}
 # Options:
 {{options}}
-
-# Instruction:
-## Reasoning:
+# Reasoning:

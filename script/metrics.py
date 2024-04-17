@@ -70,8 +70,8 @@ def draw_heat(x_labels, y_labels, scores, path):
     
     plt.ylabel('Output', fontdict={'family' : 'Times New Roman', 'size':2})
     plt.xlabel('Input', fontdict={'family' : 'Times New Roman', 'size':4})
-    plt.yticks(ticks=y_ticks, labels=y_labels, fontproperties = 'Times New Roman', fontsize=2, rotation=45)
-    plt.xticks(ticks=x_ticks, labels=x_labels, fontproperties = 'Times New Roman', fontsize=2, rotation=45)
+    plt.yticks(ticks=y_ticks, labels=y_labels, fontsize=2, rotation=45)
+    plt.xticks(ticks=x_ticks, labels=x_labels, fontsize=2, rotation=45)
     plt.subplots_adjust(left=0.15, right=0.99, top=0.98, bottom=0.15)
     cbar = ax.collections[0].colorbar
     cbar.ax.tick_params(labelsize=20)
@@ -85,13 +85,13 @@ def draw_plot(tokens, scores, path):
     # 创建图形
     plt.figure(figsize=(10, 6))
 
-    plt.bar(tokens, scores)
     
     x_ticks = range(len(tokens))
+    plt.bar(x_ticks, scores)
     
     # 设置图形标题和坐标轴标签
-    plt.xlabel('Tokens')
-    plt.ylabel('Scores')
+    plt.xlabel('Tokens', fontdict={'family' : 'Times New Roman'})
+    plt.ylabel('Scores', fontdict={'family' : 'Times New Roman'})
     plt.xticks(ticks=x_ticks, labels=tokens, fontproperties = 'Times New Roman', fontsize=2, rotation=45)
     
     plt.savefig(path)
