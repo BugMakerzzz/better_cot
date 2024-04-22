@@ -26,5 +26,6 @@ llama2_7b_path = '/mnt/publiccache/huggingface/llama-2-7b-hf'
 llama2_7b_chat_path = '/mnt/publiccache/huggingface/llama-2-7b-chat-hf'
 llama2_13b_path = '/mnt/publiccache/huggingface/Llama-2-13b-hf'
 llama2_13b_chat_path = '/mnt/publiccache/huggingface/llama-2-13b-chat-hf'
+llama3_8b_path = '/mnt/publiccache/huggingface/Meta-Llama-3-8B'
 
 mistral_7b_path = '/mnt/publiccache/huggingface/Mistral-7B-v0.1'

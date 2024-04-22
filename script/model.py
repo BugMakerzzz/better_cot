@@ -30,6 +30,8 @@ class ModelWrapper():
                     path = llama2_7b_chat_path
                 else:
                     path = llama2_7b_path
+            elif '8b' in model_name:
+                path = llama3_8b_path
             else:
                 if 'chat' in model_name:
                     path = llama2_13b_chat_path
@@ -68,7 +70,7 @@ class ModelWrapper():
         return outputs
     
     def tokenize(self, text):
-        return self.tokenizer.tokenize(text.strip())
+        return self.tokenizer.tokenize(text)
     
     
     def generate(self, input):
@@ -82,38 +84,53 @@ class ModelWrapper():
     
     
     def prepare4explain(self, inp, ref):
-        text = inp.strip() + " " + ref.strip()
+        text = inp + ref
         inp = self.tokenize(inp)
         ref = self.tokenize(ref)
         txt = self.tokenize(text)
         assert len(txt) - (len(inp) + len(ref)) <= 1, str(txt) + " | " + str(inp) + " | " + str(ref)
         # the insert blank may be splitted into multiple tokens
-        ref = txt[len(inp):]
+        ref = txt[-len(ref):]
         return inp, ref, text
         
         
-    def input_explain(self, inps, refs):
+    def input_explain(self, inps, refs, L=10, b=1, p=2, eps=1e-7):
         self.model.eval()
         inps, refs, texts = self.prepare4explain(inps, refs) 
         ids = self.tokenizer(texts, return_tensors="pt")['input_ids']
         embs = self.inp_embed(ids.to(self.device)).detach().requires_grad_()
-        bias = 0
         probs = torch.softmax(self.model(inputs_embeds=embs)["logits"], -1)
-        
+        bias = 1
         ref = torch.tensor(self.tokenizer.convert_tokens_to_ids(refs)).long()
-        obj = probs[0, torch.arange(len(inps) - bias, len(inps) + len(ref)- bias), ref]  
+        obj = probs[0, torch.arange(len(ids[0])-len(refs)-bias, len(ids[0])-bias), ref]  
         grad = []
+       
         for j in range(len(ref)): 
             zero_grad(self.model, embs)
             obj[j].backward(retain_graph=True)
-            grad.append(embs.grad.data[0, 1 - bias:1 + len(inps) - bias].detach().cpu())
-        
+            grad.append(embs.grad.data[0, :len(ids[0])-len(refs)].detach().cpu())
         with torch.no_grad():
             # importance
-            emb = embs[0, 1 - bias:1 + len(inps) - bias].unsqueeze(0).cpu()
+            emb = embs[0, :len(ids[0])-len(refs)].unsqueeze(0).cpu()
             grad = torch.stack(grad, 0).cpu()
-            expl = (grad * emb).sum(axis=-1).T
+            
+            # expl = (grad * emb).sum(axis=-1).T
+            grad_int = torch.zeros_like(emb*grad)
+            for i in range(20):
+                k = (i+1) / 20
+                grad_int += k * grad
+            expl = 1 / 20 * emb * grad_int
+            expl = expl.sum(axis=-1).T
             
             expls = expl.numpy()
+            zeros = np.zeros_like(expls)
+            expls = expls / (expls.max(axis=0, keepdims=True) + eps)
+            # expls = np.ceil(expls * L)
+            expls = np.where(expls <= 0, zeros, expls)
+            
+            # l1 = expls.sum(axis=-1)
+            # lp = (expls ** p).sum(axis=-1) ** (1. / p) + eps
+            # input_scores = (l1 / lp)
+            input_scores = expls
 
-        return inps, refs, expls
+        return inps, refs, input_scores

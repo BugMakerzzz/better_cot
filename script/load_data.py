@@ -46,11 +46,11 @@ def load_dataset(dataset, nsamples, mode='dev'):
     with open(data_file, 'r') as fin:
         items = [json.loads(line) for line in fin]
     for idx, item in enumerate(items):
-        if dataset == 'gsm8k':
+        if dataset in ['gsm8k', 'gsmic']:
             question = item['question']
             parts = item['answer'].split('####')
             item.clear()
-            item['id'] = f'GSM8K_Q{idx}'
+            item['id'] = f'{dataset.upper()}_Q{idx}'
             item['question'] = question
             item['reason'] = parts[0].strip()
             item['answer'] = str(int(parts[1].strip().replace(',', '')))
@@ -117,7 +117,8 @@ def extract_logic(answer):
     return option
 
 def extract_answer(dataset, output):
-    if dataset in ['gsm8k', 'addition', 'product',]:
+
+    if dataset in ['gsm8k', 'addition', 'product', 'gsmic']:
         answer = output.replace(',', '')  # remove middle ',' from numbers like '1,234'
         answer = re.findall('\d+', answer)
         if len(answer) == 0:
@@ -151,7 +152,7 @@ class DataLoader(object):
             else:
                 item['raw_question'] = f"{item['number1']} {item['number2']}"
             if 'context' in item.keys():
-                item['raw_question'] = item['raw_question'] + ' ' + item['question']
+                item['raw_question'] = item['context'] + ' ' + item['raw_question']
             if 'options' in item.keys():
                 item['raw_question'] = item['raw_question'] + ' ' + ' '.join(item['options'])
             item['question'] = format_prompt(prompt, item)

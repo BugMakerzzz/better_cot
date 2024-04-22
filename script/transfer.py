@@ -1,39 +1,38 @@
 import json
 
-result_path = '../result/gsm8k/Llama2_13b/cot_e3_s500.json'
-data_path = '../data/gsm8k/dev.jsonl'
+data_path = '../data/gsmic/GSM-IC_mstep.json'
+result_path = '../data/gsmic/dev.jsonl'
+train_data_path = '../data/gsm8k/train.jsonl'
+dev_data_path = '../data/gsm8k/dev.jsonl'
 
-with open(data_path, 'r') as f:
+reason_dic = {}
+
+with open(dev_data_path, 'r') as f:
     data = [json.loads(line) for line in f]
-    f.close()
-    
-with open(result_path, 'r') as f:
-    result_data = json.load(f)
+    for item in data:
+        reason_dic[item['question']] = item['answer']
     f.close()
 
-# data_dic = {}
-# for item in data:
-#     data_dic[item['id']] = item
+with open(train_data_path, 'r') as f:
+    data = [json.loads(line) for line in f]
+    for item in data:
+        reason_dic[item['question']] = item['answer']
+    f.close()   
 
-# for item in result_data:
-#     if 'id' in item.keys():
-#         data_item = data_dic[item['id']]
-#         item['context'] = data_item['context']
-#         item['question'] = data_item['question']
-#         item['gold_cot'] = data_item['reason']
-
-# with open(result_path, 'w') as f:
-#     json.dump(result_data, f, indent=4)
-#     f.close()
-
-result_path = '../data/addition/dev.jsonl'
-data_path = '../data/addition/dev.json'
 
 with open(data_path, 'r') as f:
     data = json.load(f)
     f.close()
+
+results = []
+for item in data:
+    origin_question = item['original_question']
+    if origin_question in reason_dic.keys():
+        answer = reason_dic[origin_question]
+        msg = {'question':item['new_question'], 'answer':answer}
+        results.append(msg)
     
 with open(result_path, 'w') as f:
-    for item in data:
+    for item in results:
         json.dump(item, f)
         f.write('\n')

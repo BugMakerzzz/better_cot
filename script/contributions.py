@@ -108,31 +108,31 @@ class ModelWrapper(nn.Module):
             num_layers = self.model.config.num_hidden_layers
 
         for layer in range(num_layers):
-            hidden_states = hidden_states_model[layer].cpu().detach()
-            attention_probs = attentions[layer].cpu().detach()
+            hidden_states = hidden_states_model[layer]
+            attention_probs = attentions[layer]
 
             #   value_layer: Value vectors calculated in self-attention. (batch, num_heads, seq_length, head_size)
             #   dense: Dense layer in self-attention. nn.Linear(all_head_size, all_head_size)
             #   LayerNorm: nn.LayerNorm(config.hidden_size, eps=config.layer_norm_eps)
             #   pre_ln_states: Vectors just before LayerNorm (batch, seq_length, all_head_size)
 
-            value_layer = self.transpose_for_scores(func_outputs[model_layer_name + '.' + str(layer) + '.' + values_name][0]).cpu().detach()
+            value_layer = self.transpose_for_scores(func_outputs[model_layer_name + '.' + str(layer) + '.' + values_name][0])
             
-            dense = get_module(self.model, dense_name, layer, model_layer_name).cpu()
-            ln1 = get_module(self.model, ln1_name, layer, model_layer_name).cpu()
+            dense = get_module(self.model, dense_name, layer, model_layer_name)
+            ln1 = get_module(self.model, ln1_name, layer, model_layer_name)
 
-            pre_ln_states = func_inputs[model_layer_name + '.' + str(layer) + '.' + ln1_name][0][0].cpu()
-            post_ln_states = func_outputs[model_layer_name + '.' + str(layer) + '.' + ln1_name][0].cpu()
+            pre_ln_states = func_inputs[model_layer_name + '.' + str(layer) + '.' + ln1_name][0][0]
+            post_ln_states = func_outputs[model_layer_name + '.' + str(layer) + '.' + ln1_name][0]
             
             # VW_O
             dense_bias = dense.bias
             
-            dense = dense.weight.view(self.all_head_size, self.num_attention_heads, self.attention_head_size).cpu().detach()
-            transformed_layer = torch.einsum('bhsv,dhv->bhsd', value_layer.to('cuda'), dense.to('cuda')).cpu() #(batch, num_heads, seq_length, all_head_size)
+            dense = dense.weight.view(self.all_head_size, self.num_attention_heads, self.attention_head_size)
+            transformed_layer = torch.einsum('bhsv,dhv->bhsd', value_layer, dense) #(batch, num_heads, seq_length, all_head_size)
             del dense, value_layer
             # AVW_O
             # (batch, num_heads, seq_length, seq_length, all_head_size)
-            weighted_layer = torch.einsum('bhks,bhsd->bhksd', attention_probs.to('cuda'), transformed_layer.to('cuda')).cpu()
+            weighted_layer = torch.einsum('bhks,bhsd->bhksd', attention_probs, transformed_layer)
             del transformed_layer, attention_probs
             
             # Sum each weighted vectors αf(x) over all heads:
@@ -143,7 +143,7 @@ class ModelWrapper(nn.Module):
             # Make residual matrix (batch, seq_length, seq_length, all_head_size)
             hidden_shape = hidden_states.size()
             device = hidden_states.device
-            residual = torch.einsum('sk,bsd->bskd', torch.eye(hidden_shape[1], dtype=torch.float16).to('cuda'), hidden_states.to('cuda')).cpu()
+            residual = torch.einsum('sk,bsd->bskd', torch.eye(hidden_shape[1], dtype=torch.float16).to(device), hidden_states)
             del hidden_states
             # AVW_O + residual vectors -> (batch,seq_len,seq_len,embed_dim)
             residual_weighted_layer = summed_weighted_layer + residual
@@ -157,18 +157,18 @@ class ModelWrapper(nn.Module):
                     1 / w_ln.size(0) * torch.ones_like(ln_param_transf).to(w_ln.device)
                 out = torch.einsum(
                     '... e , e f , f g -> ... g',
-                    x.to('cuda'),
-                    ln_mean_transf.to('cuda'),
-                    ln_param_transf.to('cuda')
-                ).cpu()
+                    x,
+                    ln_mean_transf,
+                    ln_param_transf
+                )
                 del ln_mean_transf, ln_param_transf
-                x.cpu()
                 return out
 
             if pre_layer_norm == False:
                 # LN 1
                 ln1_weight = ln1.weight.data
                 ln1_eps = ln1.variance_epsilon
+                del ln1
                 # ln1_bias = ln1.bias
                 # Transformed vectors T_i(x_j)
                 transformed_vectors = l_transform(residual_weighted_layer, ln1_weight)
@@ -200,17 +200,15 @@ class ModelWrapper(nn.Module):
                 
             # Assert interpretable expression of attention is equal to the output of the attention block
             assert torch.dist(resultant, real_resultant).item() < 1e-3 * real_resultant.numel()
-            del real_resultant, transformed_vectors, attn_output
+            del real_resultant, transformed_vectors, attn_output, ln_std_coef, ln1_weight, residual_weighted_layer
             
             importance_matrix = -F.pairwise_distance(transformed_vectors_std, resultant.unsqueeze(2),p=1)
+            del transformed_vectors_std
             
-            model_importance_list.append(torch.squeeze(importance_matrix))
-            
-            resultants_list.append(torch.squeeze(resultant))
+            model_importance_list.append(torch.squeeze(importance_matrix).detach().cpu())
+            resultants_list.append(torch.squeeze(resultant).detach().cpu())
             
     
-
-
         contributions_model = torch.stack(model_importance_list)
         resultants_model = torch.stack(resultants_list)
 
