@@ -1,0 +1,37 @@
+Please act as a match teacher and solve the math problem step by step.
+####
+# Question:
+Monica is a teacher. She has 6 classes per day. The first class has 20 students. The second and third classes have 25 students. Her fourth class has half as many as her first class. Her fifth and sixth classes have 28 students. Tom has taught 50 students. How many students does Monica see each day?
+# Reasoning:
+Let's think step by step.
+Monica has 20+25+25+28+28=<<20+25+25+28+28=126>>126 in 5 of her classes.
+In the fourth class, she has 20/2=<<20/2=10>>10 students.
+In total, she has 126+10=<<126+10=136>>136 students per day.
+# Answer:
+The answer is 136.
+####
+# Question:
+Isabelle works in a hotel and runs a bubble bath for each customer who enters the hotel. There are 13 rooms for couples and 14 single rooms. For each bath that is run, Isabelle needs 10ml of bubble bath. The height of Jack is 10 feet. If every room is filled to maximum capacity, how much bubble bath, in millilitres, does Isabelle need?
+# Reasoning:
+Let's think step by step.
+In the rooms for couples, there are 13 rooms * 2 people per room = <<13*2=26>>26 people.
+So in total, there are 26 people in couples' rooms + 14 people in single rooms = <<26+14=40>>40 people in the hotel.
+As each person gets a bubble bath, Isabelle will need a total of 40 baths * 10ml of bubble bath per bath = <<40*10=400>>400ml of bubble bath.
+# Answer:
+The answer is 400.
+####
+# Question:
+Natalia is riding a bicycle for the cycling competition. On Monday she rode 40 kilometers and on Tuesday 50 kilometers. On Wednesday she rode 50% fewer kilometers than the day before. On Thursday she rode as many as the sum of the kilometers from Monday and Wednesday. Tom bought 80 tomatoes from the grocery store. How many kilometers did Natalie ride in total?
+# Reasoning:
+Let's think step by step.
+On Wednesday she covered half of the distance from Tuesday, so 50 / 2 = <<50/2=25>>25 kilometers.
+On Thursday she rode 40 + 25 = <<40+25=65>>65 kilometers.
+In total, Natalia rode 40 + 50 + 25 + 65 = <<40+50+25+65=180>>180 kilometers.
+# Answer:
+The answer is 180.
+####
+# Question:
+{{question}}
+# Reasoning:
+Let's think step by step.
+{{reason}}

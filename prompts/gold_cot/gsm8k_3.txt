@@ -33,3 +33,4 @@ The answer is: 120.
 {{question}}
 # Reasoning:
 Let's think step by step.
+{{reason}}

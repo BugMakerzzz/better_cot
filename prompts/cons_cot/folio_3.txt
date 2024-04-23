@@ -1,4 +1,4 @@
-Please act as a logical teacher and reason step by step to solve the logical reasoning problem. Given a context and a question, explain your reasoning process and give the answer with the format "\nThe correct option is: A/B/C".
+Please act as a logical teacher and reason step by step to solve the logical reasoning problem. You can only use the statement from the context to reason. You cannot generate any knowledge that is not within the context for reasoning.
 # Context:
 People eat meat regularly or are vegetation. If people eat meat regularly, then they enjoy eating hamburgers and steaks. All people who are vegetarian are conscious of the environment or their health. If people are conscious about the environment or their health, then they do not go to fast food places often. If people have busy schedules without time to cook, then they go to fast food places often. If Jeremy does not both go to fast food places often and is conscious about the environment or their health, then he goes to fast food places often.
 # Question:

@@ -1,0 +1,14 @@
+Please act as a match teacher and solve the math problem step by step in the given template.
+####
+# Question:
+<<question>>
+# Reasoning:
+Let's think step by step.
+<<reason>>
+# Answer:
+The answer is: <<answer>>.
+####
+# Question:
+{{question}}
+# Reasoning:
+Let's think step by step.
