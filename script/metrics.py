@@ -4,7 +4,7 @@ import numpy as np
 import seaborn as sns
 import pandas as pd
 from matplotlib import rcParams
-
+from pandas import DataFrame
 
 
 def cal_coef():
@@ -79,6 +79,16 @@ def draw_heat(x_labels, y_labels, scores, path):
     [label.set_fontname('Times New Roman') for label in cbarlabels]
     plt.savefig(path)
     plt.close()
+    
+    
+def draw_box(samples, scores, path):
+    data = {'cot_flag':samples, 'score':scores}
+    data = DataFrame(data)
+     
+    ax = sns.boxplot(x='cot_flag', y='score', data=data)
+    plt.savefig(path)
+    plt.close()
+    
     
 def draw_plot(tokens, scores, path):
 

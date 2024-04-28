@@ -117,7 +117,6 @@ def extract_logic(answer):
     return option
 
 def extract_answer(dataset, output):
-
     if dataset in ['gsm8k', 'addition', 'product', 'gsmic']:
         answer = output.replace(',', '')  # remove middle ',' from numbers like '1,234'
         answer = re.findall('\d+', answer)
@@ -126,7 +125,7 @@ def extract_answer(dataset, output):
         answer = answer[-1]
         answer = answer.strip()
         return str(int(answer))  # expect integer only
-    elif dataset == 'proofwriter':
+    elif dataset.startswith('proofwriter'):
         answer = extract_logic(output)
         return str(answer)
     elif dataset == 'logiqa':

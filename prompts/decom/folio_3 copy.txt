@@ -1,0 +1,43 @@
+Please decompose the question based on the given context.
+# Context:
+People eat meat regularly or are vegetation. If people eat meat regularly, then they enjoy eating hamburgers and steaks. All people who are vegetarian are conscious of the environment or their health. If people are conscious about the environment or their health, then they do not go to fast food places often. If people have busy schedules without time to cook, then they go to fast food places often. If Jeremy does not both go to fast food places often and is conscious about the environment or their health, then he goes to fast food places often.
+# Question:
+Based on the above information, is the following statement true, false, or uncertain? If Jeremy has a busy schedule without time to cook, then Jeremy does not enjoy eating hamburgers and steaks.
+# Reasoning:
+If Jeremy has a busy schedule without time to cook or enjoy eating hamburgers and steaks, then Jeremy goes to fast food places often. If people are conscious about the environment or their health, then they do not go to fast food places often. This means that Jeremy is not conscious about the environment or his health. All people who are vegetarian are conscious of the environment or their health. Therefore, Jeremy is not vegetarian. People eat meat regularly or are vegetation. Therefore, Jeremy eats meat regularly. If people eat meat regularly, then they enjoy eating hamburgers and steaks. Therefore, Jeremy enjoys eating hamburgers and steaks. 
+# Answer:
+The correct option is: B
+####
+# Context:
+Some fish may sting. Stonefish is a fish. It stings to step on a stonefish. Stonefish stings cause death if not treated. To treat stonefish stings, apply heat to the affected area or use an antivenom.
+# Question:
+Based on the above information, is the following statement true, false, or uncertain? If you step on a stonefish and don’t use an antivenom, it will cause death.
+# Options:
+A) True
+B) False
+C) Uncertain
+# Reasoning:
+Missing facts and rules.
+# Answer:
+The correct option is: C
+####
+# Context:
+Some monitors produced by LG have a type-c port. If the monitor has a type-c port, then it is not produced by AOC. All monitors in the library are produced by AOC. L-2021 is either in the library or has a type-c port. L-2021 is either produced by AOC and produced by LG, or neither produced by AOC nor produced by LG.
+# Question:
+Based on the above information, is the following statement true, false, or uncertain? L-2021 either has a type-c port or is produced by LG.
+# Options:
+A) True
+B) False
+C) Uncertain
+# Reasoning:
+If L-2021 is produced by AOC and produced by LG. Then L-2021 either has a type-c port or is produced by LG is True. If L-2021 is not produced by AOC and not produced by LG and all monitors in the library are produced by AOC, therefore L-2021 is not in the library. L-2021 is either in the library or has a type-c port. Therefore L-2021 has a type-c port. Then L-2021 either has a type-c port or is produced by LG is True.
+# Answer:
+The correct option is: A
+####
+# Context:
+{{context}}
+# Question:
+{{question}}
+# Options:
+{{options}}
+# Reasoning:

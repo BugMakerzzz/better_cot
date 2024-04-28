@@ -1,0 +1,32 @@
+Please decompose the question based on the given context.
+####
+# Context:
+The cow is blue. The cow is round. The cow likes the lion. The cow visits the tiger. The lion is cold. The lion is nice. The lion likes the squirrel. The squirrel is round. The squirrel sees the lion. The squirrel visits the cow. The tiger likes the cow. The tiger likes the squirrel. If something is cold then it visits the tiger. If something visits the tiger then it is nice. If something sees the tiger and it is young then it is blue. If something is nice then it sees the tiger. If something likes the squirrel and it likes the cow then it visits the tiger. If something is nice and it sees the tiger then it is young. If the cow is cold and the cow visits the lion then the lion sees the squirrel.
+# Question:
+Based on the above information, is the following statement true, false, or unknown? The tiger is not young.
+# Reasoning:
+We need to find the statement that contains 'tiger is young' or 'it is young' at the end of the sentence. So we find these statements from the context: If something is nice and it sees the tiger then it is young. Therefore, we can get the following sub-questions:
+# Q1: Based on the above information, is the following statement true, false, or unknown? The tiger is nice. 
+# Q2: Based on the above information, is the following statement true, false, or unknown? The tiger sees the tiger. 
+####
+# Context:
+The dog sees the rabbit. The dog sees the squirrel. The dog sees the tiger. The rabbit eats the dog. The rabbit does not eat the tiger. The rabbit does not like the tiger. The squirrel does not see the rabbit. The tiger does not eat the rabbit. The tiger is not kind. The tiger likes the dog. The tiger sees the dog. If something is cold then it likes the rabbit. If something eats the tiger and it is nice then it likes the rabbit. If something likes the squirrel then the squirrel likes the rabbit. If something likes the rabbit and the rabbit is kind then it sees the tiger. If something likes the tiger then the tiger is young. If something is young and it eats the rabbit then it likes the tiger. If something sees the rabbit then the rabbit is cold. If something likes the rabbit then it likes the squirrel. If something likes the squirrel then the squirrel is cold.
+# Question:
+Based on the above information, is the following statement true, false, or unknown? The rabbit is cold.
+# Reasoning:
+We need to find the statement that contains 'rabbit is cold' or 'it is cold' at the end of the sentence. So we find these statements from the context: If something sees the rabbit then the rabbit is cold. Therefore, we can get the following sub-questions:
+# Q1: Based on the above information, is the following statement true, false, or unknown? Something sees the rabbit.
+####
+# Context:
+The bald eagle sees the dog. The dog chases the tiger. The dog eats the rabbit. The dog sees the bald eagle. The rabbit sees the dog. The tiger chases the bald eagle. The tiger eats the rabbit. The tiger is blue. The tiger is cold. The tiger sees the dog. If something is blue and it sees the bald eagle then the bald eagle sees the rabbit. If something is cold then it eats the bald eagle. If something sees the bald eagle then it chases the dog. If something eats the bald eagle then it is big. If something sees the bald eagle then the bald eagle sees the dog. If something chases the tiger and the tiger is big then it is cold. If something chases the tiger then it is rough.
+# Question:
+Based on the above information, is the following statement true, false, or unknown? The rabbit sees the tiger.
+# Reasoning:
+We need to find the statement that contains 'it sees the tiger' or 'rabbit sees the tiger' at the end of the sentence. From the context, we can find no statement contains it.So I can not break down the question.
+# Q1: None
+####
+# Context:
+{{context}}
+# Question:
+{{question}}
+# Reasoning:

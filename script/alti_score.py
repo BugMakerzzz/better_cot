@@ -84,7 +84,7 @@ def compute_joint_attention(att_mat):
     return joint_attentions
 
 
-def contribution(model_wrapped, tokenizer, input, response, device, layer=-1):
+def contribution(model_wrapped, tokenizer, input, response, device, layer=15):
     """Contribution rollout-based relevancies and blank-out relevancies in SVA."""
     
     relevancies = defaultdict(list)
@@ -114,6 +114,7 @@ def main(args):
     n_samples = args.n_samples
     n_examples = args.n_examples
     target = args.target
+    method = args.method
     
     if model_name.startswith('Llama'):
         if '7b' in model_name:
@@ -136,9 +137,9 @@ def main(args):
     model = AutoModelForCausalLM.from_pretrained(path, torch_dtype=torch.float16, device_map='auto')
     model_wrapped = ModelWrapper(model)
     dataloader = DataLoader(dataset=dataset, n_samples=n_samples)
-    data = dataloader.load_data(method='cot', n_examples=n_examples)
+    data = dataloader.load_data(method=method, n_examples=n_examples)
     wrap_question_dic = {item['id']:item['question'] for item in data}
-    result_path = f'../result/{dataset}/{model_name}/cot_e{n_examples}_s500.json'
+    result_path = f'../result/{dataset}/{model_name}/{method}_e{n_examples}_s{n_samples}.json'
     with open(result_path, 'r') as f:
         results = json.load(f)[:n_samples]
     
@@ -148,6 +149,9 @@ def main(args):
             continue
         
         input = wrap_question_dic[item['id']].split('####')[-1].strip()
+        if method == 'gold_cot':
+            input = input.split(':')[-2] + ':\n'
+
         try:
             cot, answer = item['response'].split('\n# Answer:\n')
             prefix, pred = answer.split(': ')
@@ -158,8 +162,7 @@ def main(args):
             ref = item['response'].split('\n# Answer')[0]
         else:
             input = input + cot + '\n# Answer:\n' + prefix + ': '
-            ref = pred.strip().rstrip('.')   
-            
+            ref = pred.strip().rstrip('.') 
         inps, refs, relevancies = contribution(model_wrapped, tokenizer, input, ref, model.device)
        
         if target == 'cans':
@@ -170,7 +173,7 @@ def main(args):
             end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
         elif target == 'pans':
             start_idx = [i for i, v in enumerate(inps) if v == ":"][-6] + 1
-            end_idx = [i for i, v in enumerate(inps) if v == "#"][-3] - 1
+            end_idx = [i for i, v in enumerate(inps) if v == "#"][-4] - 1
         elif target == 'cot':
             start_idx = [i for i, v in enumerate(inps) if v == ":"][-1] + 1
             end_idx = len(inps)
@@ -180,10 +183,11 @@ def main(args):
         else:
             start_idx = [i for i, v in enumerate(inps) if v == ":"][-3] + 1
             end_idx = [i for i, v in enumerate(inps) if v == "#"][-1] - 1
+        
         inps = inps[start_idx:end_idx]
-        relevancies = relevancies[:, start_idx:end_idx]
-        assert relevancies.shape[1] == len(inps), "Inps Shape Not Align!!! " + str(relevancies.shape[1]) + " | " + str(len(inps))
-        assert relevancies.shape[0] == len(refs), "Refs Shape Not Align!!! " + str(relevancies.shape[0]) + " | " + str(len(refs))
+        relevancies = relevancies[:, start_idx:end_idx].T
+        assert relevancies.shape[0] == len(inps), "Inps Shape Not Align!!! " + str(relevancies.shape[0]) + " | " + str(len(inps))
+        assert relevancies.shape[1] == len(refs), "Refs Shape Not Align!!! " + str(relevancies.shape[1]) + " | " + str(len(refs))
         
         
         score_tup = {'id':item['id'],
@@ -205,6 +209,7 @@ if __name__ == "__main__":
     parser.add_argument('--n_examples', type=int, default=5)
     parser.add_argument('--dataset', type=str, default='proofwriter')
     parser.add_argument('--target', type=str, default='cans')
+    parser.add_argument('--method', type=str, default='cot')
     args=parser.parse_args()
 
     main(args)

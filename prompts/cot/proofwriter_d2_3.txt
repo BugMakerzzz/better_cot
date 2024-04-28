@@ -1,0 +1,45 @@
+Please act as a logical teacher and reason step by step to solve the logical reasoning problem. Given a context and a question, explain your reasoning process and give the answer with the format "\nThe correct option is: A/B/C".
+####
+# Context:
+Anne is kind. Bob is furry. Bob is green. Bob is kind. Bob is nice. Bob is quiet. Bob is smart. Bob is white. Dave is furry. Dave is green. Dave is kind. Dave is nice. Dave is quiet. Dave is not smart. Dave is white. Green people are nice. All furry people are green. Green people are furry. If someone is green and not quiet then they are furry. Kind people are furry. If Anne is kind then Anne is nice.
+# Question:
+Based on the above information, is the following statement true, false, or unknown? Anne is green.
+# Options:
+A) True
+B) False
+# Reasoning:
+Anne is kind. Kind people are furry. So Anne is furry. All furry people are green. So Anne is green.
+# Answer:
+The correct option is: A
+####
+# Context:
+The bald eagle chases the mouse. The bald eagle is green. The bald eagle is young. The lion chases the bald eagle. The lion chases the mouse. The lion eats the bald eagle. The lion is cold. The lion is green. The lion sees the mouse. The mouse chases the bald eagle. The mouse chases the lion. The mouse is cold. If someone is young then they are rough. If someone is rough then they eat the mouse.
+# Question:
+Based on the above information, is the following statement true, false, or unknown? The bald eagle does not eat the mouse.
+# Options:
+A) True
+B) False
+# Reasoning:
+The bald eagle is young. If someone is young then they are rough. So The bald eagle is rough. If someone is rough then they eat the mouse. So The bald eagle eats the mouse.
+# Answer:
+The correct option is: B
+####
+# Context:
+Charlie is big. Dave is quiet. Fiona is big. Red, rough people are big. All white, rough people are quiet. All nice people are quiet. Quiet people are nice. Rough people are white. All nice people are white. If Dave is quiet and Dave is red then Dave is big. Quiet people are rough.
+# Question:
+Based on the above information, is the following statement true, false, or unknown? Dave is not white.
+# Options:
+A) True
+B) False
+# Reasoning:
+Dave is quiet. Quiet people are nice. So Dave is nice. All nice people are white. So Dave is white.
+# Answer:
+The correct option is: B
+####
+# Context:
+{{context}}
+# Question:
+{{question}}
+# Options:
+{{options}}
+# Reasoning:

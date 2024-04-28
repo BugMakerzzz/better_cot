@@ -53,16 +53,19 @@ def main():
     dataloader = DataLoader(dataset=dataset, n_samples=500)
     data = dataloader.load_data(method=method, n_examples=3)
     wrap_question_dic = {item['id']:item['question'] for item in data}
-    result_path = f'../result/{dataset}/{model_name}/{method}_e{n_examples}_s500.json'
+    result_path = f'../result/{dataset}/{model_name}/{method}_e{n_examples}_s{n_samples}.json'
     with open(result_path, 'r') as f:
-        results = json.load(f)[:n_samples]
+        results = json.load(f)[:-1][:n_samples]
     
     score_results = []  
     for item in tqdm(results):
         if item['answer'] == 'None':
             continue
-        input = wrap_question_dic[item['id']]  
         
+        input = wrap_question_dic[item['id']]  
+        if method == 'gold_cot':
+            input = input.split(':')[-2] + ':\n'
+
         try:
             cot, answer = item['response'].split('\n# Answer:\n')
             prefix, pred = answer.split(': ')
@@ -85,7 +88,7 @@ def main():
             end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
         elif target == 'pans':
             start_idx = [i for i, v in enumerate(inps) if v == ":"][-6] + 1
-            end_idx = [i for i, v in enumerate(inps) if v == "#"][-3] - 1
+            end_idx = [i for i, v in enumerate(inps) if v == "#"][-4] - 1
         elif target == 'cot':
             start_idx = [i for i, v in enumerate(inps) if v == ":"][-1] + 1
             end_idx = len(inps)
@@ -101,15 +104,22 @@ def main():
         assert scores.shape[0] == len(inps), "Inps Shape Not Align!!! " + str(scores.shape[0]) + " | " + str(len(inps))
         # assert scores.shape[2] == len(refs), "Refs Shape Not Align!!! " + str(scores.shape[2]) + " | " + str(len(refs))
         
-        
+        if 'cot_flag' in item.keys():
+            cot_flag = item['cot_flag']
+        else:
+            cot_flag = None
         score_tup = {'id':item['id'],
                     'inp':inps, 
                     'out':refs,
                     'cor_flag':item['cor_flag'], 
+                    'cot_flag':cot_flag,
                     'scores':scores.tolist()}
         score_results.append(score_tup)
-        
-    score_path = f'../result/{dataset}/{model_name}/input_{target}_scores_e{n_examples}_s{n_samples}.json'
+    
+    if method == 'gold_cot':
+        score_path = f'../result/{dataset}/{model_name}/input_{target}_scores_e{n_examples}_s{n_samples}_gold.json' 
+    else: 
+        score_path = f'../result/{dataset}/{model_name}/input_{target}_scores_e{n_examples}_s{n_samples}.json'
 
     with open(score_path, 'w') as f:
         json.dump(score_results, f, indent=4)

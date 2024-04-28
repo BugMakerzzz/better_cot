@@ -11,6 +11,7 @@ parser.add_argument('--n_samples', type=int, default=10)
 parser.add_argument('--n_examples', type=int, default=3)
 parser.add_argument('--dataset', type=str, default='proofwriter')
 parser.add_argument('--target', type=str, default='cot')
+parser.add_argument('--score', type=str, default='input')
 args = parser.parse_args()
 
 model_name = args.model
@@ -18,8 +19,9 @@ n_samples = args.n_samples
 n_examples = args.n_examples
 dataset = args.dataset 
 target = args.target
+score = args.score
 
-score_path = f'../result/{dataset}/{model_name}/input_{target}_scores_e{n_examples}_s{n_samples}.json'
+score_path = f'../result/{dataset}/{model_name}/{score}_{target}_scores_e{n_examples}_s{n_samples}.json'
 
 with open(score_path, 'r') as f:
     score_data = json.load(f)
@@ -52,7 +54,7 @@ def find_step_index(tokens, tokenizer):
         token = tokens[i]
         if token == '<0x0A>':
             continue  
-        if token == '.' or i == len(tokens)-1:
+        if token in ['.', '?'] or i == len(tokens)-1:
             end = i
             if end - start > 1 or end == len(tokens) - 1:
                 if end == len(tokens) - 1 and start == 0:
@@ -68,11 +70,11 @@ tokenizer = AutoTokenizer.from_pretrained(get_model_path(model_name))
 
 results = []
 result_path = f'../result/{dataset}/{model_name}/input_{target}_paths_e{n_examples}_s{n_samples}.json'
-for item in score_data:
+for item in score_data[:n_samples]:
     input_tokens = item['inp']
     output_tokens = item['out']
     scores = np.array(item['scores'])
-    
+
     input_step_dic = find_step_index(input_tokens, tokenizer)
     output_step_dic = find_step_index(output_tokens, tokenizer)
     
@@ -86,12 +88,12 @@ for item in score_data:
             e2 = v2['end']
             if target == 'cot' and s2 >= s1-1:
                 continue
-            attr = scores[s2:e2, s1:e1].sum() / (e2-s2+e1-s1)
-            msg = {'inp':v2['step'], 'attr':attr}
+            attr = scores[s2:e2, s1:e1].sum() / (e2-s2)
+            msg = {'inp_idx':(s2, e2),'inp':v2['step'], 'attr':attr}
             score_ls.append(msg)
         score_ls = sorted(score_ls, key=lambda x: x['attr'], reverse=True)
-        step_attr_ls.append({'ref':v1['step'], 'inp_attr':score_ls})
-    result_msg = {'id':item['id'], 'path':step_attr_ls}
+        step_attr_ls.append({'ref_idx':(s1, e1), 'ref':v1['step'], 'inp_attr':score_ls})
+    result_msg = {'id':item['id'], 'cor_flag':item['cor_flag'], 'cot_flag':item['cot_flag'], 'path':step_attr_ls}
     
     results.append(result_msg)
     
