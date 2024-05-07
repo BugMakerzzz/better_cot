@@ -54,6 +54,10 @@ def load_dataset(dataset, nsamples, mode='dev'):
             item['question'] = question
             item['reason'] = parts[0].strip()
             item['answer'] = str(int(parts[1].strip().replace(',', '')))
+        elif dataset == 'aqua':
+            item['id'] = f'{dataset.upper()}_Q{idx}'
+            item['answer'] = item['correct']
+            item['reason'] = item['rationale'] 
         elif dataset == 'csqa':
             question = item['question']['stem']
             label = str(ord(item['answerKey']) - ord("A") + 1)
@@ -61,24 +65,32 @@ def load_dataset(dataset, nsamples, mode='dev'):
             for i in range(len(item['question']['choices'])):
                 tup = item['question']['choices'][i]
                 options.append(tup['text'])
+            item['id'] = f'{dataset.upper()}_Q{idx}'
             item['answer'] = label
             item['options'] = options
         elif dataset == 'wino':
             question = item['sentence']
-            label = item['answer']
-            options = [item['option1'], item['option2']]      
+            label_dic = {'1':'A', '2':'B'}
+            label = label_dic[item['answer']]
+            options = [f"(A) {item['option1']}", f"(B) {item['option2']}"] 
+            item['id'] = f'{dataset.upper()}_Q{idx}'  
+            item['question'] = question  
             item['answer'] = label
             item['options'] = options
+        elif dataset == 'siqa':
+            item['id'] = f'{dataset.upper()}_Q{idx}'
+            question = item['context'] + ' ' + item['question']
+            item['question'] = question 
     random.shuffle(items)
     return items[:nsamples] if nsamples > 0 else items
 
 
 def extract_logic(answer):
-    pattern1 = r"correct \w+ is:?\s*([A-D])"
+    pattern1 = r"correct \w+ is:?\s*([A-E])"
     pattern2 = r"correct option is: (true|false|unknown)"
     pattern3 = r"([A-C])\)\s*(True|False|Unknown)"
-    pattern4 = r"([A-D])\) "
-    pattern5 = r"^[A-D]\.?$"
+    pattern4 = r"([A-E])\) "
+    pattern5 = r"^[A-E]\.?$"
 
     match = re.search(pattern1, answer)
     option = None
@@ -125,17 +137,9 @@ def extract_answer(dataset, output):
         answer = answer[-1]
         answer = answer.strip()
         return str(int(answer))  # expect integer only
-    elif dataset.startswith('proofwriter'):
-        answer = extract_logic(output)
-        return str(answer)
-    elif dataset == 'logiqa':
-        answer = extract_logic(output)
-        return str(answer)
-    elif dataset == 'folio':
-        answer = extract_logic(output)
-        return str(answer)
     else:
-        return output 
+        answer = extract_logic(output)
+        return str(answer)
 
 class DataLoader(object):
     def __init__(self, dataset, n_samples) -> None:

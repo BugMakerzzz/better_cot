@@ -1,5 +1,7 @@
 import json
 import jsonlines
+import re
+from metrics import get_rouge
 
 def transfer_proofwriter(item):
     def prepare_reason(proof, index_dic):
@@ -55,10 +57,103 @@ def transfer_proofwriter(item):
         results.append(msg)
     return results
 
-if __name__ == '__main__':
+
+def trans_siqa():
+    label_path = '/netdisk/ljc/code/faithful_cot/data/siqa/dev-labels.lst'
+    data_path = '/netdisk/ljc/code/faithful_cot/data/siqa/dev.jsonl'
+    labels = []
+    label_dic = {'1':'A', '2':'B', '3':'C'}
+    with open(label_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            labels.append(label_dic[line[:-1]])
+    with open(data_path, 'r') as fin:
+        items = [json.loads(line) for line in fin]
+    
+    for i in range(len(items)):
+        item = items[i]
+        answerA = f"(A) {item['answerA']}"
+        answerB = f"(B) {item['answerB']}"
+        answerC = f"(C) {item['answerC']}"
+        options = [answerA, answerB, answerC]
+        item['options'] = options
+        item['answer'] = labels[i]
+        
+    with jsonlines.open(data_path, 'w') as f:
+        f.write_all(items)
+
+def extract_answer():
+    def extract_logic(answer):
+        pattern1 = r"correct \w+ is:?\s*([A-E])"
+        pattern2 = r"correct option is: (true|false|unknown)"
+        pattern3 = r"([A-C])\)\s*(True|False|Unknown)"
+        pattern4 = r"([A-E])\) "
+        pattern5 = r"^[A-E]\.?$"
+
+        match = re.search(pattern1, answer)
+        option = None
+        # extract pattern
+        if match:
+            option = match.group(1)
+        
+        if not option:
+            match = re.search(pattern2, answer, re.IGNORECASE)
+            if match:
+                word_to_option = {"true": "A", "false": "B", "unknown": "C"}
+                option = word_to_option.get(match.group(1).lower())
+
+        if not option:
+            match = re.search(pattern3, answer, re.IGNORECASE)
+            if match:
+                option = match.group(1)
+        if not option and len(answer)<16:
+            if 'true' in answer.lower():
+                option = 'A'
+            elif 'false' in answer.lower():
+                option = 'B'
+            elif 'unknown' in answer.lower():
+                option = 'C'
+        if not option:
+            match = re.match(pattern4, answer)
+            if match:
+                option = match.group(1)
+        if not option:
+            match = re.match(pattern5, answer)
+            if match:
+                option = match.group(0) 
+        if not option:
+            option = None
+            # wrong_data.append(d)
+        return option
+
+    result_path = '/netdisk/ljc/code/faithful_cot/result/wino/Mistral_7b/cot_e3_s100.json'
+    with open(result_path, 'r') as f:
+        result = json.load(f)
+    correct = 0
+    for item in result[:-1]:
+        # answer = extract_logic(item['answer'])
+        # item['answer'] = answer
+        if item['label'] == '1':
+            item['label'] = 'A'
+        elif item['label'] == '2':
+            item['label'] = 'B'
+        if item['answer'] == item['label']:
+            item['cor_flag'] = True
+            correct += 1
+    result[-1]['acc'] = correct / 100
+    with open(result_path, 'w') as f:
+        json.dump(result, f, indent=4)
+
+
+def cal_cot_rouge():
+    path = '../result/proofwriter_d1/Llama2_13b/cot_e3_s100.json'
+    with open(path, 'r') as f:
+        result = json.load(f)
+    print(get_rouge(result, {'gen':'response', 'ref':'reason'}))
+    return 
+
+def make_proof_dataset():
     depth = 1
     split = 'dev'
-    
     src_path = f'/mnt/userdata/ljc/dataset/proofwriter-dataset-V2020.12.3/OWA/depth-{depth}/meta-{split}.jsonl'
     with open(src_path, 'r') as fin:
         items = [json.loads(line) for line in fin]
@@ -76,3 +171,8 @@ if __name__ == '__main__':
     result_path = f'/mnt/userdata/ljc/code/faithful_cot/data/proofwriter_d{depth}/{split}.json'    
     with open(result_path, 'w') as f:
         json.dump(results, f, indent=4)
+
+if __name__ == '__main__':
+    cal_cot_rouge() 
+    
+  

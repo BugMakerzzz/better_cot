@@ -88,10 +88,10 @@ class ModelWrapper():
         inp = self.tokenize(inp)
         ref = self.tokenize(ref)
         txt = self.tokenize(text)
-        assert len(txt) - (len(inp) + len(ref)) <= 1, str(txt) + " | " + str(inp) + " | " + str(ref)
+        # assert len(txt) - (len(inp) + len(ref)) <= 1, str(txt) + " | " + str(inp) + " | " + str(ref)
         # the insert blank may be splitted into multiple tokens
         ref = txt[-len(ref):]
-        return inp, ref, text
+        return txt, ref, text
         
         
     def input_explain(self, inps, refs, L=10, b=1, p=2, eps=1e-7):
@@ -108,10 +108,10 @@ class ModelWrapper():
         for j in range(len(ref)): 
             zero_grad(self.model, embs)
             obj[j].backward(retain_graph=True)
-            grad.append(embs.grad.data[0, :len(ids[0])-len(refs)].detach().cpu())
+            grad.append(embs.grad.data[0, :len(ids[0])].detach().cpu())
         with torch.no_grad():
             # importance
-            emb = embs[0, :len(ids[0])-len(refs)].unsqueeze(0).cpu()
+            emb = embs[0, :len(ids[0])].unsqueeze(0).cpu()
             grad = torch.stack(grad, 0).cpu()
             
             # expl = (grad * emb).sum(axis=-1).T

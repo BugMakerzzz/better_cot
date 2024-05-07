@@ -4,8 +4,8 @@ import torch
 model = AutoModelForSequenceClassification.from_pretrained(deberta_path).to('cuda')
 tokenizer = AutoTokenizer.from_pretrained(deberta_path)
 
-premise = "The lion visits the bear"
-statement = "The lion visits the bear"
+premise = "If someone is round then they are green"
+statement = "The cat is not nice"
 
 input = tokenizer(premise, statement, return_tensors="pt")
 output = model(input["input_ids"].to('cuda'))  # device = "cuda:0" or "cpu"

@@ -6,15 +6,16 @@ from model import ModelWrapper
 from load_data import DataLoader
 from transformers import set_seed
 from tqdm import tqdm
-from IPython.core.display import HTML
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='Llama2_13b')
 parser.add_argument('--n_samples', type=int, default=500)
 parser.add_argument('--n_examples', type=int, default=3)
 parser.add_argument('--method', type=str, default='cot')
-parser.add_argument('--dataset', type=str, default='proofwriter')
+parser.add_argument('--dataset', type=str, default='proofwriter_d1')
 parser.add_argument('--target', type=str, default='cans')
+parser.add_argument('--proxy', type=str, default='Llama2_13b')
 args = parser.parse_args()
 set_seed(17)
 
@@ -24,7 +25,7 @@ n_examples = args.n_examples
 dataset = args.dataset 
 target = args.target
 method = args.method
-
+proxy = args.proxy
 
 def cal_attr(expl, L=10, b=5, p=2, eps=1e-7):
 
@@ -47,58 +48,115 @@ def cal_attr(expl, L=10, b=5, p=2, eps=1e-7):
 
     return input_attrs, output_attrs
 
+def prepare_idx(dataset, target, method, inps):
+    if target == 'cans':
+        if dataset in ['gsm8k', 'aqua']:
+            start_idx = [i for i, v in enumerate(inps) if v == "#"][-2] + 5
+        else:
+            start_idx = [i for i, v in enumerate(inps) if v == ":"][-3] + 1      
+        end_idx = [i for i, v in enumerate(inps) if v == "#"][-1] - 1  
+    elif target == 'qans':
+        if dataset in ['gsm8k']:
+            if method == 'direct':
+                start_idx = [i for i, v in enumerate(inps) if v == "#"][-2] + 3 
+            else:
+                start_idx = [i for i, v in enumerate(inps) if v == "#"][-3] + 3 
+        elif dataset in ['aqua']:
+            if method == 'direct':
+                start_idx = [i for i, v in enumerate(inps) if v == "#"][-3] + 3
+            else:
+                start_idx = [i for i, v in enumerate(inps) if v == "#"][-4] + 3
+        else:
+            if method == 'direct':
+                start_idx = [i for i, v in enumerate(inps) if v == ":"][-4] + 1
+            else:
+                start_idx = [i for i, v in enumerate(inps) if v == ":"][-5] + 1
+        end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
+    elif target == 'pans':
+        if dataset in ['gsm8k', 'aqua']:
+            if method == 'direct':
+                start_idx = [i for i, v in enumerate(inps) if v == "#"][-3] + 3 
+                end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
+            else:
+                start_idx = [i for i, v in enumerate(inps) if v == "#"][-4] + 3 
+                end_idx = [i for i, v in enumerate(inps) if v == "#"][-3] - 1
+        else:
+            if method == 'direct':
+                start_idx = [i for i, v in enumerate(inps) if v == ":"][-5] + 1
+                end_idx = [i for i, v in enumerate(inps) if v == "#"][-3] - 1
+            else:
+                start_idx = [i for i, v in enumerate(inps) if v == ":"][-6] + 1
+                end_idx = [i for i, v in enumerate(inps) if v == "#"][-4] - 1
+    elif target == 'cot':
+        if dataset in ['gsm8k', 'aqua']:
+            start_idx = [i for i, v in enumerate(inps) if v == '#'][-1] + 5
+        else:
+            start_idx = [i for i, v in enumerate(inps) if v == ":"][-1] + 1
+        end_idx = len(inps)
+    elif target == 'pcot':
+        if dataset in ['gsm8k', 'aqua']:
+            start_idx = [i for i, v in enumerate(inps) if v == "#"][-3] + 3
+            end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
+        else:
+            start_idx = [i for i, v in enumerate(inps) if v == ":"][-4] + 1
+            end_idx = [i for i, v in enumerate(inps) if v == "#"][-3] - 1
+    else:
+        if dataset in ['gsm8k', 'aqua']:
+            start_idx = [i for i, v in enumerate(inps) if v == "#"][-2] + 3
+        else:
+            start_idx = [i for i, v in enumerate(inps) if v == ":"][-4] + 1
+        end_idx = [i for i, v in enumerate(inps) if v == "#"][-1] - 1
+        
+    return start_idx, end_idx
+
 
 def main():
-    model = ModelWrapper(model_name)
-    dataloader = DataLoader(dataset=dataset, n_samples=500)
-    data = dataloader.load_data(method=method, n_examples=3)
-    wrap_question_dic = {item['id']:item['question'] for item in data}
-    result_path = f'../result/{dataset}/{model_name}/{method}_e{n_examples}_s{n_samples}.json'
+    if dataset in ['folio', 'proofwriter']:
+        result_path = f'../result/{dataset}/{model_name}/{method}_e{n_examples}_s500.json'
+    else:
+        result_path = f'../result/{dataset}/{model_name}/{method}_e{n_examples}_s100.json'
     with open(result_path, 'r') as f:
-        results = json.load(f)[:-1][:n_samples]
+        if method == 'attr_cot':
+            results = json.load(f)[:-1]
+        else:
+            results = json.load(f)[:-1][:n_samples]
+    
+    
+    model = ModelWrapper(proxy)
+    dataloader = DataLoader(dataset=dataset, n_samples=500)
+    if method == 'attr_cot':
+        data = dataloader.load_data(method='cot', n_examples=3)
+    else:
+        data = dataloader.load_data(method=method, n_examples=3)
+    wrap_question_dic = {item['id']:item['question'] for item in data}
     
     score_results = []  
     for item in tqdm(results):
         if item['answer'] == 'None':
             continue
-        
-        input = wrap_question_dic[item['id']]  
-        if method == 'gold_cot':
-            input = input.split(':')[-2] + ':\n'
+        input = wrap_question_dic[item['id']].strip() + '\n'
+        if method == 'direct':
+            prefix, pred = item['response'].split(': ')
+            prefix = prefix.strip()
+            input = input + prefix + ': '
+            ref = pred.strip().rstrip('.')  
+        else:
+            if method == 'gold_cot':
+                input = input.split(':')[-2] + ':\n'
 
-        try:
-            cot, answer = item['response'].split('\n# Answer:\n')
-            prefix, pred = answer.split(': ')
-        except:
-            continue
-        if target in ['cot', 'qcot', 'pcot']:
-            input = input + cot
-            ref = item['response'].split('\n# Answer')[0]
-        else:
-            input = input + cot + '\n# Answer:\n' + prefix + ': '
-            ref = pred.strip().rstrip('.')   
-      
+            try:
+                cot, answer = item['response'].split('\n# Answer:\n')
+                cot = cot.strip()
+                prefix, pred = answer.split(': ')
+            except:
+                continue
+            if target in ['cot', 'qcot', 'pcot']:
+                ref = cot
+            else:
+                input = input + cot + '\n# Answer:\n' + prefix + ': '
+                ref = pred.strip().rstrip('.')   
         inps, refs, scores = model.input_explain(input, ref)
-        
-        if target == 'cans':
-            start_idx = [i for i, v in enumerate(inps) if v == ":"][-3] + 1
-            end_idx = [i for i, v in enumerate(inps) if v == "#"][-1] - 1  
-        elif target == 'qans':
-            start_idx = [i for i, v in enumerate(inps) if v == ":"][-5] + 1
-            end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
-        elif target == 'pans':
-            start_idx = [i for i, v in enumerate(inps) if v == ":"][-6] + 1
-            end_idx = [i for i, v in enumerate(inps) if v == "#"][-4] - 1
-        elif target == 'cot':
-            start_idx = [i for i, v in enumerate(inps) if v == ":"][-1] + 1
-            end_idx = len(inps)
-        elif target == 'pcot':
-            start_idx = [i for i, v in enumerate(inps) if v == ":"][-4] + 1
-            end_idx = [i for i, v in enumerate(inps) if v == "#"][-3] - 1
-        else:
-            start_idx = [i for i, v in enumerate(inps) if v == ":"][-3] + 1
-            end_idx = [i for i, v in enumerate(inps) if v == "#"][-1] - 1
-    
+        start_idx, end_idx = prepare_idx(dataset, target, method, inps)
         inps = inps[start_idx:end_idx]
         scores = scores[start_idx:end_idx]
         assert scores.shape[0] == len(inps), "Inps Shape Not Align!!! " + str(scores.shape[0]) + " | " + str(len(inps))
@@ -116,10 +174,9 @@ def main():
                     'scores':scores.tolist()}
         score_results.append(score_tup)
     
-    if method == 'gold_cot':
-        score_path = f'../result/{dataset}/{model_name}/input_{target}_scores_e{n_examples}_s{n_samples}_gold.json' 
-    else: 
-        score_path = f'../result/{dataset}/{model_name}/input_{target}_scores_e{n_examples}_s{n_samples}.json'
+
+    score_path = f'../result/{dataset}/{model_name}/{method}_{proxy}_{target}_scores_e{n_examples}_s{n_samples}.json' 
+
 
     with open(score_path, 'w') as f:
         json.dump(score_results, f, indent=4)

@@ -2,15 +2,15 @@ import json
 import numpy as np
 import argparse
 import os
-from metrics import draw_heat, draw_plot
+from metrics import draw_heat, draw_line
+from pandas import DataFrame
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='Llama2_13b')
-parser.add_argument('--n_samples', type=int, default=1)
-parser.add_argument('--n_examples', type=int, default=1)
+parser.add_argument('--n_samples', type=int, default=100)
+parser.add_argument('--n_examples', type=int, default=3)
 parser.add_argument('--dataset', type=str, default='proofwriter')
 parser.add_argument('--target', type=str, default='cans')
-parser.add_argument('--score', type=str, default='input')
 args = parser.parse_args()
 
 model_name = args.model
@@ -18,12 +18,10 @@ n_samples = args.n_samples
 dataset = args.dataset 
 n_examples = args.n_examples
 target = args.target
-score = args.score
 
-
-score_path = f'../result/{dataset}/{model_name}/{score}_{target}_scores_e{n_examples}_s{n_samples}.json'
 
 def plt_score():
+    score_path = f'../result/{dataset}/{model_name}/input_{target}_scores_e{n_examples}_s{n_samples}.json'
     result_path = f'../result/{dataset}/{model_name}/fig/'
     with open(score_path, 'r') as f:
         data = json.load(f) 
@@ -39,18 +37,40 @@ def plt_score():
         output_tokens = [token.strip('\u2581') for token in output_tokens]
         scores = item['scores']
 
-        if score == 'alti':
-            draw_heat(input_tokens, 
-                    output_tokens, 
-                    scores,
-                    path=os.path.join(dir_path, f"alti_{target}_score.pdf"))
-        else:
-            draw_heat(output_tokens, 
-                    input_tokens, 
-                    scores,
-                    path=os.path.join(dir_path, f"input_{target}_score.pdf"))
+        draw_heat(output_tokens, 
+            input_tokens, 
+            scores,
+            path=os.path.join(dir_path, f"input_{target}_score.pdf"))
             
-            
+def plot_step_line():
+    dataset_ls = ['gsm8k', 'aqua', 'proofwriter', 'folio', 'wino', 'siqa']
+    target_ls = ['pcot', 'cot', 'cans']
+    
+    for target in target_ls:
+        datasets = []
+        x = []
+        scores = []
+        for dataset in dataset_ls:
+            path = f'../result/{dataset}/{model_name}/input_{target}_step_score_e3_s100.json'
+            if not os.path.exists(path):
+                path = f'../result/{dataset}/{model_name}/input_qcot_step_score_e3_s100.json'
+            with open(path, 'r') as f:
+                data = json.load(f)
+            for item in data:
+                attr = item['attr']
+                if len(attr) == 9:
+                    attr = [0] + attr
+                elif len(attr) < 9:
+                    print(item['id'])
+                for i in range(10):
+                    x.append( 10 * (i+1))
+                    scores.append(attr[i])
+                    datasets.append(dataset)
+        data = {'dataset':datasets, 'step (%)':x, 'score':scores}
+        data = DataFrame(data)
+        path = f'./{target}_step_line_fig.pdf'
+        draw_line(data, path)
+        
 # def plt_score():
 #     result_path = f'../result/{dataset}/{model_name}/'
 #     with open(score_path, 'r') as f:
@@ -76,4 +96,4 @@ def plt_score():
 #                 scores[:-1],
 #                 path=os.path.join(dir_path, f"{id}_{score}.pdf"))
 
-plt_score()
+plot_step_line()

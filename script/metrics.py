@@ -5,7 +5,8 @@ import seaborn as sns
 import pandas as pd
 from matplotlib import rcParams
 from pandas import DataFrame
-
+import palettable
+from rouge import Rouge
 
 def cal_coef():
     score_path = '../result/gsm8k/Llama2_13b/score_e3_s100.json'
@@ -81,11 +82,40 @@ def draw_heat(x_labels, y_labels, scores, path):
     plt.close()
     
     
-def draw_box(samples, scores, path):
-    data = {'cot_flag':samples, 'score':scores}
+def draw_line(data, path):
+    sns.set_theme(style="whitegrid",font='Times New Roman')
+    ax = sns.lineplot(x = "step (%)", 
+                      y = "score", 
+                      hue='dataset',
+                      palette=sns.color_palette("hls", n_colors=6, desat=.6), 
+                      data=data)
+    ax.legend(loc='upper left')
+    plt.savefig(path)
+    plt.close()    
+    
+def draw_box(samples, cot_flags, scores, path, mode='type'):
+    data = {'sample':samples, 'cot_flag':cot_flags, 'score':scores}
     data = DataFrame(data)
-     
-    ax = sns.boxplot(x='cot_flag', y='score', data=data)
+    
+    sns.set_theme(style="whitegrid",font='Times New Roman')
+    if mode == 'type':
+        ax = sns.boxplot(x='cot_flag', 
+                        y='score', 
+                        #  hue='cot_flag',
+                        data=data,
+                        flierprops={'marker':'d', 'markerfacecolor':'black', 'markersize':1},
+                        palette=sns.color_palette("hls", 5)
+                        )
+    else:
+        plt.figure(dpi=100, figsize=(16, 8))
+        ax = sns.boxplot(x='sample', 
+                        y='score', 
+                        hue='cot_flag',
+                        data=data,
+                        flierprops={'marker':'d', 'markerfacecolor':'black', 'markersize':1},
+                        palette=sns.color_palette("hls", 5)
+                        )
+ 
     plt.savefig(path)
     plt.close()
     
@@ -106,6 +136,35 @@ def draw_plot(tokens, scores, path):
     
     plt.savefig(path)
     plt.close()
-
+    
+def get_rouge(results, name_dic):
+    generate_sents = []
+    ref_sents = []
+    for item in results[:-1]:
+        if not item[name_dic['gen']]:
+            continue
+        cot = item[name_dic['gen']].split('\n# Answer:')[0]
+        generate_sents.append(cot)
+        if isinstance(item[name_dic['ref']], list):
+            f = 0
+            for ref in item[name_dic['ref']]:
+                rouge = cal_rouge(cot, ref, avg=False)
+                if rouge['f'] > f:
+                    reason = ref
+                    f = rouge['f']
+            ref_sents.append(reason)
+        else:
+            ref_sents.append(item[name_dic['ref']])
+    rouge = cal_rouge(generate_sents, ref_sents)
+    return rouge
+            
+            
+def cal_rouge(generate_sents, ref_sents, avg=True):
+    rouge = Rouge()
+    rouge_score = rouge.get_scores(hyps=generate_sents, refs=ref_sents, avg=avg)
+    if avg:
+        return rouge_score['rouge-l']
+    else:
+        return rouge_score[0]['rouge-l']
 
 

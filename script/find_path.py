@@ -7,11 +7,13 @@ from config import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='Llama2_13b')
-parser.add_argument('--n_samples', type=int, default=10)
+parser.add_argument('--n_samples', type=int, default=100)
 parser.add_argument('--n_examples', type=int, default=3)
-parser.add_argument('--dataset', type=str, default='proofwriter')
+parser.add_argument('--dataset', type=str, default='proofwriter_d1')
 parser.add_argument('--target', type=str, default='cot')
-parser.add_argument('--score', type=str, default='input')
+parser.add_argument('--proxy', type=str, default='Llama2_13b')
+parser.add_argument('--method', type=str, default='cot')
+
 args = parser.parse_args()
 
 model_name = args.model
@@ -19,9 +21,15 @@ n_samples = args.n_samples
 n_examples = args.n_examples
 dataset = args.dataset 
 target = args.target
-score = args.score
+proxy = args.proxy
+method = args.method
 
-score_path = f'../result/{dataset}/{model_name}/{score}_{target}_scores_e{n_examples}_s{n_samples}.json'
+score_path = f'../result/{dataset}/{model_name}/{method}_{proxy}_{target}_scores_e{n_examples}_s{n_samples}.json'
+if not os.path.exists(score_path):
+    if method == 'direct':
+        score_path = f'../result/{dataset}/{model_name}/input_{target}_scores_e{n_examples}_s{n_samples}_direct.json'
+    else:
+        score_path = f'../result/{dataset}/{model_name}/input_{target}_scores_e{n_examples}_s{n_samples}.json'
 
 with open(score_path, 'r') as f:
     score_data = json.load(f)
@@ -52,9 +60,11 @@ def find_step_index(tokens, tokenizer):
     end = 0
     for i in range(len(tokens)):
         token = tokens[i]
-        if token == '<0x0A>':
-            continue  
-        if token in ['.', '?'] or i == len(tokens)-1:
+        if token == '<0x0A>' and i == 0:
+            start = 1
+        if i == len(tokens)-1 \
+            or token in ['?', '<0x0A>'] \
+            or token == '.' and (not tokens[i-1].isdigit() or not tokens[i+1].isdigit()):
             end = i
             if end - start > 1 or end == len(tokens) - 1:
                 if end == len(tokens) - 1 and start == 0:
@@ -66,11 +76,11 @@ def find_step_index(tokens, tokenizer):
     return step_idx_dic
 
 
-tokenizer = AutoTokenizer.from_pretrained(get_model_path(model_name))
+tokenizer = AutoTokenizer.from_pretrained(get_model_path(proxy))
 
 results = []
-result_path = f'../result/{dataset}/{model_name}/input_{target}_paths_e{n_examples}_s{n_samples}.json'
-for item in score_data[:n_samples]:
+result_path = f'../result/{dataset}/{model_name}/{method}_{proxy}_{target}_paths_e{n_examples}_s{n_samples}.json'
+for item in score_data:
     input_tokens = item['inp']
     output_tokens = item['out']
     scores = np.array(item['scores'])
@@ -88,7 +98,7 @@ for item in score_data[:n_samples]:
             e2 = v2['end']
             if target == 'cot' and s2 >= s1-1:
                 continue
-            attr = scores[s2:e2, s1:e1].sum() / (e2-s2)
+            attr = scores[s2:e2, s1:e1].mean()
             msg = {'inp_idx':(s2, e2),'inp':v2['step'], 'attr':attr}
             score_ls.append(msg)
         score_ls = sorted(score_ls, key=lambda x: x['attr'], reverse=True)

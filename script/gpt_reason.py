@@ -289,7 +289,7 @@ def task_id_generator_function():
         task_id += 1 
 
 
-def chat_generate(model, input_ls, method):
+def chat_generate(model, input_ls, method, dataset):
     if method == 'cot_sc':
         sample_cnt = 5
         temperature = 1.0
@@ -389,78 +389,85 @@ def extract_answer(dataset, output):
         answer = answer[-1]
         answer = answer.strip()
         return str(int(answer))  # expect integer only
-    elif dataset == 'proofwriter':
-        answer = extract_logic(output)
-        return str(answer)
-    elif dataset == 'logiqa':
-        answer = extract_logic(output)
-        return str(answer)
-    elif dataset == 'folio':
-        answer = extract_logic(output)
-        return str(answer)
     else:
-        return output 
+        answer = extract_logic(output)
+        return str(answer)
 
-def prepare_inst_input(input):
+def prepare_inst_input(input, method):
     inst_inputs = []
     examples = input.split('####')
     inst_inputs.append({"role":"system", "content": examples[0]})
     for example in examples[1:-1]:
-        inp, out = example.split('# Reasoning:\n')
-        inp = inp + '# Reasoning:\n'
+        if method == 'direct':
+            inp, out = example.split('# Answer:\n')
+            inp = inp + '# Answer:\n'
+        else:
+            inp, out = example.split('# Reasoning:\n')
+            inp = inp + '# Reasoning:\n'
         inst_inputs.append({"role":"user", "content": inp})
         inst_inputs.append({"role":"assistant", "content": out})
     inst_inputs.append({"role":"user", "content": examples[-1]})
     return inst_inputs        
         
-parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='gpt3.5')
-parser.add_argument('--n_samples', type=int, default=500)
-parser.add_argument('--n_examples', type=int, default=3)
-parser.add_argument('--dataset', type=str, default='proofwriter')
-parser.add_argument('--method', type=str, default='cot')
-args = parser.parse_args()
 
-model_name = args.model
-n_samples = args.n_samples
-n_examples = args.n_examples
-dataset = args.dataset 
-method = args.method
 
-set_seed(17)
-dataloader = DataLoader(dataset=dataset, n_samples=n_samples)
-data = dataloader.load_data(method=method, n_examples=n_examples)
-inst_inputs = []
-for item in data:
-    input = item['question']
-    inst_inputs.append(prepare_inst_input(input))
+def gpt_reason(data, model_name, method, dataset):
+    inst_inputs = []
+    for item in data:
+        input = item['question']
+        inst_inputs.append(prepare_inst_input(input, method))
+        
+    responses = chat_generate(model_name, inst_inputs, method, dataset)
+    responses = list(responses.values())
+
+    i = 0
+    correct = 0
+    result = []
+    for item in data:
+        if 'reason' in item.keys():
+            reason = item['reason']
+        else:
+            reason = None 
+        response = responses[i]['response']
+        answer = responses[i]['answer']
+        cor_flag = False
+        if answer == item['answer']:
+            cor_flag = True
+            correct += 1
+        msg = {'id':item['id'], 'question':item['raw_question'], 'response':response, 'answer':answer, 'reason':reason, 'label':item['answer'], 'cor_flag':cor_flag}
+        result.append(msg)
+        i += 1   
+    result.append({'acc': correct / len(data)})
     
-responses = chat_generate(model_name, inst_inputs, method)
-responses = list(responses .values())
+    return result
 
-i = 0
-correct = 0
-result = []
-for item in data:
-    if 'reason' in item.keys():
-        reason = item['reason']
-    else:
-        reason = None 
-    response = responses[i]['response']
-    answer = responses[i]['answer']
-    cor_flag = False
-    if answer == item['answer']:
-        cor_flag = True
-        correct += 1
-    msg = {'id':item['id'], 'question':item['raw_question'], 'response':response, 'answer':answer, 'reason':reason, 'label':item['answer'], 'cor_flag':cor_flag}
-    result.append(msg)
-    i += 1   
-result.append({'acc': correct / n_samples})
+# if __name__ == '__main__':
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument('--model', type=str, default='gpt3.5')
+#     parser.add_argument('--n_samples', type=int, default=500)
+#     parser.add_argument('--n_examples', type=int, default=3)
+#     parser.add_argument('--dataset', type=str, default='proofwriter')
+#     parser.add_argument('--method', type=str, default='cot')
+#     args = parser.parse_args()
 
-result_dir = f'../result/{dataset}/{model_name}/'
-if not os.path.exists(result_dir):
-    os.makedirs(result_dir)
-result_path = os.path.join(result_dir, f'{method}_e{n_examples}_s{n_samples}.json')
-with open(result_path, 'w') as f:
-    json.dump(result, f, indent=4)
-    f.close()
+#     model_name = args.model
+#     n_samples = args.n_samples
+#     n_examples = args.n_examples
+#     dataset = args.dataset 
+#     method = args.method
+
+#     set_seed(17)
+    
+#     dataloader = DataLoader(dataset=dataset, n_samples=n_samples)
+#     data = dataloader.load_data(method=method, n_examples=n_examples)
+    
+
+#     result = gpt_reason(data)
+     
+#     result_dir = f'../result/{dataset}/{model_name}/'
+#     if not os.path.exists(result_dir):
+#         os.makedirs(result_dir)
+#     result_path = os.path.join(result_dir, f'{method}_e{n_examples}_s{n_samples}.json')
+#     with open(result_path, 'w') as f:
+#         json.dump(result, f, indent=4)
+#         f.close()
