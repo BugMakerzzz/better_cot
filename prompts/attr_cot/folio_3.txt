@@ -7,8 +7,10 @@ Based on the above information, is the following statement true, false, or uncer
 A) True
 B) False
 C) Uncertain
+# Hint:
+You should focus on: If people have busy schedules without time to cook, then they go to fast food places often.
 # Reasoning:
-If Jeremy has a busy schedule without time to cook or enjoy eating hamburgers and steaks, then Jeremy goes to fast food places often. If people are conscious about the environment or their health, then they do not go to fast food places often. This means that Jeremy is not conscious about the environment or his health. All people who are vegetarian are conscious of the environment or their health. Therefore, Jeremy is not vegetarian. People eat meat regularly or are vegetation. Therefore, Jeremy eats meat regularly. If people eat meat regularly, then they enjoy eating hamburgers and steaks. So Jeremy enjoys eating hamburgers and steaks. 
+If Jeremy has a busy schedule without time to cook or enjoy eating hamburgers and steaks, then Jeremy goes to fast food places often. If people are conscious about the environment or their health, then they do not go to fast food places often. This means that Jeremy is not conscious about the environment or his health. All people who are vegetarian are conscious of the environment or their health. Therefore, Jeremy is not vegetarian. People eat meat regularly or are vegetation. Therefore, Jeremy eats meat regularly. If people eat meat regularly, then they enjoy eating hamburgers and steaks. Therefore, Jeremy enjoys eating hamburgers and steaks. 
 # Answer:
 The correct option is: B
 ####
@@ -20,6 +22,8 @@ Based on the above information, is the following statement true, false, or uncer
 A) True
 B) False
 C) Uncertain
+# Hint:
+You should focus on: To treat stonefish stings, apply heat to the affected area or use an antivenom.
 # Reasoning:
 Missing facts and rules.
 # Answer:
@@ -33,8 +37,10 @@ Based on the above information, is the following statement true, false, or uncer
 A) True
 B) False
 C) Uncertain
+# Hint:
+You should focus on: L-2021 is either in the library or has a type-c port.
 # Reasoning:
-If L-2021 is produced by AOC and produced by LG. Then L-2021 either has a type-c port or is produced by LG is True. If L-2021 is not produced by AOC and not produced by LG and all monitors in the library are produced by AOC, therefore L-2021 is not in the library. L-2021 is either in the library or has a type-c port. Therefore L-2021 has a type-c port. So L-2021 either has a type-c port or is produced by LG.
+If L-2021 is produced by AOC and produced by LG. Then L-2021 either has a type-c port or is produced by LG is True. If L-2021 is not produced by AOC and not produced by LG and all monitors in the library are produced by AOC, therefore L-2021 is not in the library. L-2021 is either in the library or has a type-c port. Therefore L-2021 has a type-c port. Then L-2021 either has a type-c port or is produced by LG is True.
 # Answer:
 The correct option is: A
 ####
@@ -44,4 +50,3 @@ The correct option is: A
 {{question}}
 # Options:
 {{options}}
-# Reasoning:

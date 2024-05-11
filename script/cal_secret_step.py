@@ -35,6 +35,8 @@ scores = []
 for num in range(1, 11):
     path_dic = {}
     rand_path_dic = {}
+    score_dic = {0:0, 1:0, 2:0, 3:0}
+    cnt_dic = {0:0, 1:0, 2:0, 3:0}
     for item in path_data:
         inp_attr = item['path'][-1]['inp_attr']
         attr_sent = [x['inp'].strip('.').strip() for x in inp_attr[:num]]
@@ -42,45 +44,39 @@ for num in range(1, 11):
             k = len(inp_attr)
         else:
             k = num
-        rand_attrs = random.sample(item['path'][-1]['inp_attr'], k)
-        rand_attr_sent = [x['inp'].strip('.').strip() for x in rand_attrs]
-        path_dic[item['id']] = '.'.join(attr_sent)
-        rand_path_dic[item['id']] = '.'.join(rand_attr_sent)
+        path_dic[item['id']] = attr_sent
+    cnt = 0
     for item in data:
-        correct = 0
         if item['id'] not in path_dic.keys():
             continue
+        cnt_dic[item['cot_flag']] += 1
         attr_sent = path_dic[item['id']]
         gold_cot = item['reason']
-        if isinstance(gold_cot, list):
-            r = [cal_rouge(attr_sent, ref, avg=False)['r'] for ref in gold_cot]
-            score = np.array(r).max()
-        else:
-            score = cal_rouge(attr_sent, gold_cot, avg=False)['r']
+        cot = item['response']
+        for sent in attr_sent:
+
+            if sent in cot:
+                continue
+            if isinstance(gold_cot, list):
+                for g_cot in gold_cot:
+                    if sent in gold_cot:
+                        score_dic[item['cot_flag']] += 1
+                        break
+                # r = [cal_rouge(attr_sent, ref, avg=False)['r'] for ref in gold_cot]
+                # score = np.array(r).max()
+            else:
+                if sent in gold_cot:
+                    score_dic[item['cot_flag']] += 1
+                # score = cal_rouge(attr_sent, gold_cot, avg=False)['r']
        
         # score = correct / len(gold_cot.split('.'))
-        cot_flags.append(item['cot_flag'])
+    for k, v in score_dic.items():
+        cot_flags.append(k)
         nums.append(num)
-        scores.append(score)
-    items = random.sample(data, 20)
-    for item in items:
-        correct = 0
-        if item['id'] not in rand_path_dic.keys():
-            continue
-        attr_sent = rand_path_dic[item['id']]
-        gold_cot = item['reason']
-        if isinstance(gold_cot, list):
-            r = [cal_rouge(attr_sent, ref, avg=False)['r'] for ref in gold_cot]
-            score = np.array(r).max()
-        else:
-            score = cal_rouge(attr_sent, gold_cot, avg=False)['r']
-       
-        cot_flags.append('random')
-        nums.append(num)
-        scores.append(score)
+        scores.append(v/cnt_dic[k])
 
 data = {'cot_flag':cot_flags, 'nums':nums, 'score':scores}
 data = DataFrame(data)
 names = ['nums', 'score', 'cot_flag']
-path = f'../result/{dataset}/{model_name}/hidden_overlap_line_fig.pdf'
+path = f'../result/{dataset}/{model_name}/sec_overlap_line_fig.pdf'
 draw_line(data, path, names)

@@ -441,33 +441,33 @@ def gpt_reason(data, model_name, method, dataset):
     
     return result
 
-# if __name__ == '__main__':
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument('--model', type=str, default='gpt3.5')
-#     parser.add_argument('--n_samples', type=int, default=500)
-#     parser.add_argument('--n_examples', type=int, default=3)
-#     parser.add_argument('--dataset', type=str, default='proofwriter')
-#     parser.add_argument('--method', type=str, default='cot')
-#     args = parser.parse_args()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model', type=str, default='gpt4')
+    parser.add_argument('--n_samples', type=int, default=500)
+    parser.add_argument('--n_examples', type=int, default=3)
+    parser.add_argument('--dataset', type=str, default='proofwriter')
+    parser.add_argument('--method', type=str, default='cot')
+    args = parser.parse_args()
 
-#     model_name = args.model
-#     n_samples = args.n_samples
-#     n_examples = args.n_examples
-#     dataset = args.dataset 
-#     method = args.method
+    model_name = args.model
+    n_samples = args.n_samples
+    n_examples = args.n_examples
+    dataset = args.dataset 
+    method = args.method
 
-#     set_seed(17)
+    set_seed(17)
     
-#     dataloader = DataLoader(dataset=dataset, n_samples=n_samples)
-#     data = dataloader.load_data(method=method, n_examples=n_examples)
+    dataloader = DataLoader(dataset=dataset, n_samples=n_samples)
+    data = dataloader.load_data(method=method, n_examples=n_examples)
     
 
-#     result = gpt_reason(data)
+    result = gpt_reason(data, model_name, method, dataset)
      
-#     result_dir = f'../result/{dataset}/{model_name}/'
-#     if not os.path.exists(result_dir):
-#         os.makedirs(result_dir)
-#     result_path = os.path.join(result_dir, f'{method}_e{n_examples}_s{n_samples}.json')
-#     with open(result_path, 'w') as f:
-#         json.dump(result, f, indent=4)
-#         f.close()
+    result_dir = f'../result/{dataset}/{model_name}/'
+    if not os.path.exists(result_dir):
+        os.makedirs(result_dir)
+    result_path = os.path.join(result_dir, f'{method}_e{n_examples}_s{n_samples}.json')
+    with open(result_path, 'w') as f:
+        json.dump(result, f, indent=4)
+        f.close()

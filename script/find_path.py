@@ -63,7 +63,7 @@ def find_step_index(tokens, tokenizer):
         if token == '<0x0A>' and i == 0:
             start = 1
         if i == len(tokens)-1 \
-            or token in ['?', '<0x0A>'] \
+            or token in ['?', '<0x0A>', '\".'] \
             or token == '.' and (not tokens[i-1].isdigit() or not tokens[i+1].isdigit()):
             end = i
             if end - start > 1 or end == len(tokens) - 1:
@@ -80,7 +80,9 @@ tokenizer = AutoTokenizer.from_pretrained(get_model_path(proxy))
 
 results = []
 result_path = f'../result/{dataset}/{model_name}/{method}_{proxy}_{target}_paths_e{n_examples}_s{n_samples}.json'
+
 for item in score_data:
+  
     input_tokens = item['inp']
     output_tokens = item['out']
     scores = np.array(item['scores'])
@@ -103,6 +105,8 @@ for item in score_data:
             score_ls.append(msg)
         score_ls = sorted(score_ls, key=lambda x: x['attr'], reverse=True)
         step_attr_ls.append({'ref_idx':(s1, e1), 'ref':v1['step'], 'inp_attr':score_ls})
+    if 'cot_flag' not in item.keys():
+        item['cot_flag'] = None
     result_msg = {'id':item['id'], 'cor_flag':item['cor_flag'], 'cot_flag':item['cot_flag'], 'path':step_attr_ls}
     
     results.append(result_msg)

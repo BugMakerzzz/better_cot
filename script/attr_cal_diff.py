@@ -22,17 +22,27 @@ dataset = args.dataset
 target = args.target
 fig_mode = args.fig_mode
 
+# path_file = f'../result/{dataset}/{model_name}/cot_{model_name}_{target}_paths_e{n_examples}_s{n_samples}.json'
+# if not os.path.exists(path_file):
 path_file = f'../result/{dataset}/{model_name}/input_{target}_paths_e{n_examples}_s{n_samples}.json'
+data_file = f'../result/{dataset}/{model_name}/cot_e{n_examples}_s500.json'
+
+
+with open(path_file, 'r') as f:
+    data = json.load(f)
+    f.close()
+with open(data_file, 'r') as f:
+    cots = json.load(f)
+    f.close()
+
+
 cot_flags = []
 scores = []
 samples = []
-with open(path_file, 'r') as f:
-    data = json.load(f)
-
 idx = -1
 for item in data:
     idx += 1
-    if target in ['cans', 'pans']:
+    if target in ['cans']:
         path = item['path'][-1]
         if fig_mode == 'type':
             attr = np.mean(np.array([x['attr'] for x in path['inp_attr']]))
@@ -40,17 +50,22 @@ for item in data:
             attr = [x['attr'] for x in path['inp_attr']]
     elif target in ['pcot']:
         ref_ls = []
-        for path in item['path']:
-            ref_ls.append(path['ref'].strip('.').strip())
         attr = []
-        for path in item['path']:
-            score = []
-            for tup in path['inp_attr'][:3]:
-                if tup['inp'].strip('.').strip() in ref_ls:
-                    continue
-                else:
-                    score.append(tup['attr'])
-            attr.extend(score)
+        for tup in item['path'][:-1]:
+            inp_attr = tup['inp_attr'][0]['attr']
+            attr.append(inp_attr)
+        attr = np.array(attr).min()
+    elif target in ['pans']:
+        if not item['cor_flag']:
+            continue
+        cot = cots[idx]
+        path = item['path'][-1]
+        attr = []
+        for tup in path['inp_attr'][:3]:
+            if tup['inp'].strip('.').strip() in cot:
+                continue
+            else:
+                attr.append(tup['attr'])
         attr = np.mean(np.array(attr))
     # elif target in ['pcot']:
     #     path = item['path'][-1]
@@ -59,9 +74,9 @@ for item in data:
     elif target in ['cot']:
         ans_path = item['path'][-1]
         attr = np.mean(np.array([x['attr'] for x in ans_path['inp_attr']]))
-        rule_path = item['path'][-2]
-        if rule_path['inp_attr']:
-            attr = np.mean(np.array([x['attr'] for x in rule_path['inp_attr']]))
+        # rule_path = item['path'][-2]
+        # if rule_path['inp_attr']:
+        #     attr = np.mean(np.array([x['attr'] for x in rule_path['inp_attr']]))
     # elif target in ['diff_pcot']:
     #     if not item['path']:
     #         continue

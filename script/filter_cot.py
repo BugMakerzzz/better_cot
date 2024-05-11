@@ -5,7 +5,7 @@ import torch
 from tqdm import tqdm
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, set_seed
 from config import *
-from metrics import get_rouge
+from metrics import get_bleu
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='Llama2_13b')
@@ -16,8 +16,9 @@ parser.add_argument('--proxy', type=str, default='Llama2_13b')
 parser.add_argument('--method', type=str, default='attr_cot')
 parser.add_argument('--nli_check', action='store_true')
 parser.add_argument('--cans_check', action='store_true')
-parser.add_argument('--cot_check', action='store_true')
 parser.add_argument('--pcot_check', action='store_true')
+parser.add_argument('--cot_check', action='store_true')
+# parser.add_argument('--weight', type=float, default=0.5)
 args = parser.parse_args()
 set_seed(17)
 
@@ -29,8 +30,8 @@ proxy = args.proxy
 method = args.method
 nli_check = args.nli_check
 cans_check = args.cans_check
-cot_check = args.cot_check
 pcot_check = args.pcot_check
+cot_check = args.cot_check
 
 result_file = f'../result/{dataset}/{model_name}/{method}_e{n_examples}_s{n_samples}.json'
 with open(result_file, 'r') as f:
@@ -51,20 +52,22 @@ def check_paths(target):
     for item in path_data: 
         if target == 'cans':
             path = item['path'][-1]['inp_attr']
-            score = np.array([x['attr'] for x in path]).mean()
+            score = np.array([x['attr'] for x in path]).min()
         elif target == 'cot':
-            score = []
-            for tup in item['path'][1:]:
-                inp_attr = tup['inp_attr']
-                inp_attr = sorted(inp_attr, key=lambda x: x['inp_idx'][1], reverse=True)
-                score.append(inp_attr[0]['attr'])
-            score = np.array(score).mean()
+            path = item['path'][-1]['inp_attr']
+            if path:
+                score = np.array([x['attr'] for x in path]).min()
+            else:
+                score = 0
         elif target == 'pcot':
             score = []
             for tup in item['path'][:-1]:
                 inp_attr = tup['inp_attr'][0]['attr']
                 score.append(inp_attr)
-            score = np.array(score).min()
+            if score:
+                score = np.array(score).min()
+            else:
+                score = 0
         id = item['id']
         if id in scores.keys():
             scores[id].append(score)
@@ -72,17 +75,21 @@ def check_paths(target):
             scores[id] = [score]
     return scores
  
-def check_nli(question, statement):
-    question = question.strip() + '.'
-    statement = statement.strip() + '.'
+def check_nli(question, statement, dataset):
     input = check_tokenizer(question, statement, return_tensors="pt")
     output = check_model(input["input_ids"].to('cuda')) 
     prediction = torch.softmax(output["logits"][0], -1)
     label_names = ["contradiction", "neutral", "entailment"]
-    if label_names[torch.argmax(prediction)] == 'contradiction' and torch.max(prediction) > 0.8:
-        return 'B'
-    elif label_names[torch.argmax(prediction)] == 'entailment' and torch.max(prediction) > 0.8:
-        return 'A'
+    if label_names[torch.argmax(prediction)] == 'contradiction' and torch.max(prediction) > 0.95:
+        if dataset.startswith('proofwriter'):
+            return 'B'    
+        else:
+            return 'False'
+    elif label_names[torch.argmax(prediction)] == 'entailment' and torch.max(prediction) > 0.95:
+        if dataset.startswith('proofwriter'):
+            return 'A'    
+        else:
+            return 'True'
     else:
         return None
  
@@ -90,64 +97,90 @@ results = []
 correct = 0
 if cans_check:
     cans_scores = check_paths(target='cans')
-if cot_check:
-    cot_scores = check_paths(target='cot')
 if pcot_check:
     pcot_scores = check_paths(target='pcot')
+if cot_check:
+    cot_scores = check_paths(target='cot')
+    
+data_dic = {}
+for item in data:
+    id = item['id'] 
+    # if item['label'] == 'C' or item['answer'] == 'C':
+    #     continue
+    if id in data_dic.keys():
+        data_dic[id].append(item)
+    else:
+        data_dic[id] = [item]
 
-for i in tqdm(range(0, len(data), 3)):
-    id = data[i]['id']
-    question = data[i]['question']
-    hints = [data[j]['hint'] for j in range(i, i+3)]
-    answers = [data[j]['answer'] for j in range(i, i+3)]
-    reason = data[i]['reason']
-    label = data[i]['label']
-
-    question_stem = question.split('?')[-1].split('.')[0].strip() + '.'
+for id, items in tqdm(data_dic.items()):
+    item_num = len(items)
+    question = items[0]['question']
+    if 'reason' not in items[0].keys():
+        reason = None
+    else:
+        reason = items[0]['reason']
+    answers = [items[i]['answer'] for i in range(item_num)]
+    label = items[0]['label']
+    hints = [(item['hint'] if 'hint' in item.keys() else None) for item in items]
+    responses = [item['response'] for item in items]
+ 
+    if cans_check and id in cans_scores.keys():
+        cans_score = cans_scores[id] 
+        for i in range(item_num):
+            if answers[i] == 'None':
+                cans_score.insert(i, 0)
+    else:
+        cans_score = item_num * [0]       
+    if pcot_check and id in pcot_scores.keys():
+        pcot_score = pcot_scores[id] 
+        for i in range(item_num):
+            if answers[i] == 'None':
+                pcot_score.insert(i, 0)
+    else:
+        pcot_score = item_num * [0]
+    if cot_check and id in cot_scores.keys():
+        cot_score = cot_scores[id] 
+        for i in range(item_num):
+            if answers[i] == 'None':
+                cot_score.insert(i, 0)
+    else:
+        cot_score = item_num * [0]
+        
     final_answers = []
-    scores = []
-    responses = []
-    if cans_check and id in cans_scores.keys() and len(cans_scores[id]) == 3:
-        cans_score = [cans_scores[id][j] for j in range(3)]
-    else:
-        cans_score = [0, 0, 0]
-    if cot_check and id in cot_scores.keys() and len(cot_scores[id]) == 3:
-        cot_score = [cot_scores[id][j] for j in range(3)]
-    else:
-        cot_score = [0, 0, 0]
-    if pcot_check and id in pcot_scores.keys() and len(pcot_scores[id]) == 3:
-        pcot_score = [pcot_scores[id][j] for j in range(3)]
-    else:
-        pcot_score = [0, 0, 0]
-    for j in range(3):
-        response = data[i+j]['response'] 
+    scores = []    
+    for i in range(item_num):
         if nli_check:
-            last_step = response.split('\n# Answer:')[0].split('.')[-2].strip() + '.'
-            pred = check_nli(question=question_stem, statement=last_step)
+            response = responses[i] 
+            if dataset.startswith('proofwriter'):
+                question_stem = question.split('?')[-1].split('.')[0].strip()
+                last_step = response.split('\n# Answer:')[0].split('.')[-2].strip()
+                question_stem = question_stem.strip() 
+                last_step = last_step.lstrip('So').strip()
+            else:
+                question_stem = question.split(':')[-1].strip().rstrip('.')
+                last_step = response.split('\n# Answer:')[0].split('.')[-2].strip()
+            pred = check_nli(question=question_stem, statement=last_step, dataset=dataset)
         else:
-            pred = answers[j]
-        score = cans_score[j] + cot_score[j] + pcot_score[j]
+            pred = answers[i]
+        score = cans_score[i] + pcot_score[i] + cot_score[i]
         if pred:
             scores.append(score)
         else:
             scores.append(score - 100)
-        responses.append(response)
         final_answers.append(pred)   
  
         
     answer_scores = {}
-    for j in range(3):
-        if not final_answers[j]:
-            continue
-        elif final_answers[j] in answer_scores.keys():
-            answer_scores[final_answers[j]] += scores[j]
+    for i in range(item_num):
+        if final_answers[i] in answer_scores.keys():
+            answer_scores[final_answers[i]] += scores[i]
         else:
-            answer_scores[final_answers[j]] = scores[j]
+            answer_scores[final_answers[i]] = scores[i]
     if answer_scores:
         final_answer = max(answer_scores, key=lambda x: answer_scores[x])
-        for j in range(3):
-            if final_answers[j] != final_answer:
-                scores[j] -= 100
+        for i in range(item_num):
+            if final_answers[i] != final_answer:
+                scores[i] -= 100
         final_response = responses[scores.index(max(scores))]
     else:
         final_answer = None
@@ -165,8 +198,8 @@ for i in tqdm(range(0, len(data), 3)):
            'reason':reason, 
            'label':label, 
            'cans_score':cans_score,
-           'cot_score':cot_score,
            'pcot_score':pcot_score,
+           'cot_score':cot_score,
            'score':scores,
            'f_answers':final_answers,
            'f_response':final_response,
@@ -174,17 +207,18 @@ for i in tqdm(range(0, len(data), 3)):
            'cor_flag':cor_flag}
     results.append(msg)
 results.append({'acc': correct / n_samples})
-results.append(get_rouge(results, {'gen':'f_response', 'ref':'reason'}))
+if dataset not in ['folio']:
+    results.append(get_bleu(results, {'gen':'f_response', 'ref':'reason'}))
 
 result_path = f'../result/{dataset}/{model_name}/filter_cot_e{n_examples}_s{n_samples}'
 if nli_check:
     result_path += '_nli'
 if cans_check:
-    result_path += '_cans'
-if cot_check:
-    result_path += '_cot'
+    result_path += f'_cans'
 if pcot_check:
-    result_path += '_pcot'
+    result_path += f'_pcot'
+if cot_check:
+    result_path += f'_cot'
 result_path +='.json'
    
 with open(result_path, 'w') as f:

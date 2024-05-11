@@ -44,7 +44,7 @@ def plt_score():
             
 def plot_step_line():
     dataset_ls = ['gsm8k', 'aqua', 'proofwriter', 'folio', 'wino', 'siqa']
-    target_ls = ['pcot', 'cot', 'cans']
+    target_ls = ['qcot', 'cot', 'cans', 'qans']
     
     for target in target_ls:
         datasets = []
@@ -52,8 +52,6 @@ def plot_step_line():
         scores = []
         for dataset in dataset_ls:
             path = f'../result/{dataset}/{model_name}/input_{target}_step_score_e3_s100.json'
-            if not os.path.exists(path):
-                path = f'../result/{dataset}/{model_name}/input_qcot_step_score_e3_s100.json'
             with open(path, 'r') as f:
                 data = json.load(f)
             for item in data:
@@ -69,7 +67,8 @@ def plot_step_line():
         data = {'dataset':datasets, 'step (%)':x, 'score':scores}
         data = DataFrame(data)
         path = f'./{target}_step_line_fig.pdf'
-        draw_line(data, path)
+        names = ['step (%)', 'score', 'dataset']
+        draw_line(data, path, names)
         
 # def plt_score():
 #     result_path = f'../result/{dataset}/{model_name}/'

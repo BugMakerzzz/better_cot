@@ -54,7 +54,7 @@ def prepare_idx(dataset, target, method, inps):
             start_idx = [i for i, v in enumerate(inps) if v == "#"][-2] + 5
         else:
             start_idx = [i for i, v in enumerate(inps) if v == ":"][-3] + 1      
-        end_idx = [i for i, v in enumerate(inps) if v == "#"][-1] - 1  
+        end_idx = [i for i, v in enumerate(inps) if v == "#"][-1] - 1    
     elif target == 'qans':
         if dataset in ['gsm8k']:
             if method == 'direct':
@@ -70,7 +70,7 @@ def prepare_idx(dataset, target, method, inps):
             if method == 'direct':
                 start_idx = [i for i, v in enumerate(inps) if v == ":"][-4] + 1
             else:
-                start_idx = [i for i, v in enumerate(inps) if v == ":"][-5] + 1
+                start_idx = [i for i, v in enumerate(inps) if v == ":"][-6] + 1
         end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
     elif target == 'pans':
         if dataset in ['gsm8k', 'aqua']:
@@ -79,6 +79,20 @@ def prepare_idx(dataset, target, method, inps):
                 end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
             else:
                 start_idx = [i for i, v in enumerate(inps) if v == "#"][-4] + 3 
+                end_idx = [i for i, v in enumerate(inps) if v == "#"][-3] - 1
+        elif dataset in ['addition', 'lastletter', 'coinflip']:
+            if method == 'direct':
+                start_idx = [i for i, v in enumerate(inps) if v == ":"][-4] + 1
+                end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
+            else:
+                start_idx = [i for i, v in enumerate(inps) if v == ":"][-5] + 1
+                end_idx = [i for i, v in enumerate(inps) if v == "#"][-3] - 1
+        elif dataset in ['prontoqa', 'prontoqa_d2']:
+            if method == 'direct':
+                start_idx = [i for i, v in enumerate(inps) if v == ":"][-5] + 1
+                end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
+            else:
+                start_idx = [i for i, v in enumerate(inps) if v == ":"][-6] + 1
                 end_idx = [i for i, v in enumerate(inps) if v == "#"][-3] - 1
         else:
             if method == 'direct':
@@ -97,6 +111,12 @@ def prepare_idx(dataset, target, method, inps):
         if dataset in ['gsm8k', 'aqua']:
             start_idx = [i for i, v in enumerate(inps) if v == "#"][-3] + 3
             end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
+        elif dataset in ['addition', 'lastletter', 'coinflip']:
+            start_idx = [i for i, v in enumerate(inps) if v == ":"][-3] + 1
+            end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
+        elif dataset in ['prontoqa', 'prontoqa_d2']:
+            start_idx = [i for i, v in enumerate(inps) if v == ":"][-4] + 1
+            end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
         else:
             start_idx = [i for i, v in enumerate(inps) if v == ":"][-4] + 1
             end_idx = [i for i, v in enumerate(inps) if v == "#"][-3] - 1
@@ -111,10 +131,7 @@ def prepare_idx(dataset, target, method, inps):
 
 
 def main():
-    if dataset in ['folio', 'proofwriter']:
-        result_path = f'../result/{dataset}/{model_name}/{method}_e{n_examples}_s500.json'
-    else:
-        result_path = f'../result/{dataset}/{model_name}/{method}_e{n_examples}_s100.json'
+    result_path = f'../result/{dataset}/{model_name}/{method}_e{n_examples}_s100.json'
     with open(result_path, 'r') as f:
         if method == 'attr_cot':
             results = json.load(f)[:-1]
@@ -149,12 +166,14 @@ def main():
                 cot = cot.strip()
                 prefix, pred = answer.split(': ')
             except:
+                # print(item['id'])
                 continue
             if target in ['cot', 'qcot', 'pcot']:
                 ref = cot
             else:
                 input = input + cot + '\n# Answer:\n' + prefix + ': '
                 ref = pred.strip().rstrip('.')   
+        
         inps, refs, scores = model.input_explain(input, ref)
         start_idx, end_idx = prepare_idx(dataset, target, method, inps)
         inps = inps[start_idx:end_idx]

@@ -137,6 +137,10 @@ def extract_answer(dataset, output):
         answer = answer[-1]
         answer = answer.strip()
         return str(int(answer))  # expect integer only
+    elif dataset in ['lastletter', 'coinflip', 'prontoqa', 'prontoqa_d2']:
+        answer = output.split(':')[-1]
+        answer = answer.strip().strip('.').strip()
+        return answer
     else:
         answer = extract_logic(output)
         return str(answer)

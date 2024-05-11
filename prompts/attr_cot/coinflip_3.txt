@@ -1,0 +1,39 @@
+Please act as a symbolic teacher and reason step by step to solve the symbolic reasoning problem Given a context and a question, explain your reasoning process and give the answer.
+####
+# Context:
+A coin is heads up. Tyler flips the coin. Isabella flips the coin. Serenity does not flip the coin. Wyatt does not flip the coin. Skylar does not flip the coin. Peyton does not flip the coin. Isaac flips the coin. Riley flips the coin. Brielle flips the coin. Gabriella does not flip the coin.
+# Question:
+Is the coin still heads up?
+# Hint:
+You should focus on: The coin was flipped by Tyler.
+# Reasoning:
+The coin was flipped by Brielle. The coin was flipped by Isaac. The coin was flipped by Tyler. The coin was flipped by Riley. The coin was flipped by Isabella. So the coin was flipped 5 times, which is an odd number. The coin started heads up, so after an odd number of flips, it will be tails up.
+# Answer:
+The answer is: no.
+####
+# Context:
+A coin is heads up. Mackenzie does not flip the coin. Elizabeth flips the coin. Brielle does not flip the coin. Isaac does not flip the coin. Hailey flips the coin. Nora flips the coin. Genesis flips the coin. Levi does not flip the coin. Mason does not flip the coin. Stella does not flip the coin.
+# Question:
+Is the coin still heads up?
+# Hint:
+You should focus on: The coin was flipped by Nora.
+# Reasoning:
+The coin was flipped by Elizabeth. The coin was flipped by Hailey. The coin was flipped by Nora. The coin was flipped by Genesis. So the coin was flipped 4 times, which is an even number. The coin started heads up, so after an even number of flips, it will still be heads up.
+# Answer:
+The answer is: yes.
+####
+# Context:
+A coin is heads up. Kaylee does not flip the coin. John does not flip the coin. Jonathan does not flip the coin. Landon does not flip the coin. Michael does not flip the coin. Alexander does not flip the coin. Julia flips the coin. Zoe does not flip the coin. Avery does not flip the coin. Paisley does not flip the coin.
+# Question:
+Is the coin still heads up?
+# Hint:
+You should focus on: The coin was flipped by Julia.
+# Reasoning:
+The coin was flipped by Julia. So the coin was flipped 1 times, which is an odd number. The coin started heads up, so after an odd number of flips, it will be tails up.
+# Answer:
+The answer is: no.
+####
+# Context:
+{{context}}
+# Question:
+{{question}}

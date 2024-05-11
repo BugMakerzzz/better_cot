@@ -7,6 +7,7 @@ from matplotlib import rcParams
 from pandas import DataFrame
 import palettable
 from rouge import Rouge
+from nltk.translate.bleu_score import sentence_bleu
 
 def cal_coef():
     score_path = '../result/gsm8k/Llama2_13b/score_e3_s100.json'
@@ -82,13 +83,17 @@ def draw_heat(x_labels, y_labels, scores, path):
     plt.close()
     
     
-def draw_line(data, path):
+def draw_line(data, path, names):
     sns.set_theme(style="whitegrid",font='Times New Roman')
-    ax = sns.lineplot(x = "step (%)", 
-                      y = "score", 
-                      hue='dataset',
-                      palette=sns.color_palette("hls", n_colors=6, desat=.6), 
+    custom_colors = ['#7976A2', '#4A5E65', '#E29957', '#86B5A1', '#B95A58', '#4292C6']
+    ax = sns.lineplot(x = names[0], 
+                      y = names[1], 
+                      hue = names[2],
+                    #   palette=sns.color_palette("hls", n_colors=6, desat=.6), 
+                      marker = 'o',
+                      palette=sns.color_palette(custom_colors),
                       data=data)
+    # ax.lines[4].set_linestyle("--")
     ax.legend(loc='upper left')
     plt.savefig(path)
     plt.close()    
@@ -96,7 +101,7 @@ def draw_line(data, path):
 def draw_box(samples, cot_flags, scores, path, mode='type'):
     data = {'sample':samples, 'cot_flag':cot_flags, 'score':scores}
     data = DataFrame(data)
-    
+    custom_colors = ['#7976A2', '#4A5E65', '#E29957', '#86B5A1', '#B95A58', '#4292C6']
     sns.set_theme(style="whitegrid",font='Times New Roman')
     if mode == 'type':
         ax = sns.boxplot(x='cot_flag', 
@@ -104,7 +109,8 @@ def draw_box(samples, cot_flags, scores, path, mode='type'):
                         #  hue='cot_flag',
                         data=data,
                         flierprops={'marker':'d', 'markerfacecolor':'black', 'markersize':1},
-                        palette=sns.color_palette("hls", 5)
+                        # palette=sns.color_palette("hls", 4, desat=.6)
+                        palette=sns.color_palette(custom_colors)
                         )
     else:
         plt.figure(dpi=100, figsize=(16, 8))
@@ -113,7 +119,7 @@ def draw_box(samples, cot_flags, scores, path, mode='type'):
                         hue='cot_flag',
                         data=data,
                         flierprops={'marker':'d', 'markerfacecolor':'black', 'markersize':1},
-                        palette=sns.color_palette("hls", 5)
+                        palette=sns.color_palette("hls", 4, desat=.6)
                         )
  
     plt.savefig(path)
@@ -168,3 +174,25 @@ def cal_rouge(generate_sents, ref_sents, avg=True):
         return rouge_score[0]['rouge-l']
 
 
+def get_bleu(results, name_dic):
+    bleu = {'bleu1':[], 'bleu2':[], 'bleu3':[], 'bleu4':[]}
+    for item in results[:-1]:
+        if not item[name_dic['gen']]:
+            continue
+        candidate = item[name_dic['gen']].split('\n# Answer:')[0].split()
+        if isinstance(item[name_dic['ref']], list):
+            reference = [sent.split() for sent in item[name_dic['ref']]]
+        else:
+            reference = [item[name_dic['ref']].split()]
+        score1 = sentence_bleu(reference, candidate, weights=(1, 0, 0, 0))
+        score2 = sentence_bleu(reference, candidate, weights=(0, 1, 0, 0))
+        score3 = sentence_bleu(reference, candidate, weights=(0, 0, 1, 0))
+        score4 = sentence_bleu(reference, candidate, weights=(0, 0, 0, 1))
+        bleu['bleu1'].append(score1)
+        bleu['bleu2'].append(score2)
+        bleu['bleu3'].append(score3)
+        bleu['bleu4'].append(score4)
+    for k,v in bleu.items():
+        v = np.array(v).mean()
+        bleu[k] = v
+    return bleu

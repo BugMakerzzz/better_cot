@@ -8,7 +8,7 @@ from tqdm import tqdm
 from gpt_reason import gpt_reason
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='Llama3_8b')
+parser.add_argument('--model', type=str, default='Llama2_13b')
 parser.add_argument('--n_samples', type=int, default=500)
 parser.add_argument('--n_examples', type=int, default=5)
 parser.add_argument('--dataset', type=str, default='proofwriter')
@@ -42,8 +42,8 @@ else:
         if 'sc' in method:
             top_k = 40
             temperature = 0.7
-            num_beams = 20
-            num_beam_groups = 20
+            num_beams = 10
+            num_beam_groups = 10
             diversity_penalty = 0.1
             if model_name.startswith('Llama3'):
                 stop_token = "<|eot_id|>"

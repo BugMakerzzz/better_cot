@@ -11,13 +11,14 @@ gsm8k_dev_data_path = '../data/grade-school-math/grade_school_math/data/test.jso
 proofwriter_dev_data_path = '../data'
 
 
-OPENAI_API_KEY = 'sk-1Xqps1OjUfWXge5j70F10641Ee0a45Bb85667f030eD1589b'
+# OPENAI_API_KEY = 'sk-1Xqps1OjUfWXge5j70F10641Ee0a45Bb85667f030eD1589b'
+OPENAI_API_KEY = 'sk-dX6r5Y946BX26dQv79B050D59d1545C6A3206b23466b0010'
 max_requests_per_minute = 3500 # 3_000 * 0.5
 max_tokens_per_minute = 90000 #250_000 * 0.5
 
 # max_requests_per_minute = 60 # 3_000 * 0.5
 # max_tokens_per_minute = 60000 #250_000 * 0.5
-request_url = 'https://abc.gptmf.top/v1/chat/completions'
+request_url = 'http://195.35.36.189:3000/v1/chat/completions'
 # request_url = "https://api.openai.com/v1/chat/completions"
 
 

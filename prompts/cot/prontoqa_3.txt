@@ -1,0 +1,34 @@
+Please act as a logical teacher and reason step by step to solve the logical reasoning problem.
+####
+# Context:
+Each numpus is a lempus. Shumpuses are floral. Every shumpus is a brimpus. Each numpus is dull. Shumpuses are gorpuses. Gorpuses are liquid. Sam is a shumpus. Sam is a numpus.
+# Question:
+True or false: Sam is not floral.
+# Reasoning:
+Sam is a shumpus. Shumpuses are floral. Sam is floral.
+# Answer:
+The answer is: False.
+####
+# Context:
+Every lempus is spicy. Every jompus is a zumpus. Vumpuses are small. Each zumpus is moderate. Lorpuses are not transparent. Every dumpus is not orange. Dumpuses are lempuses. Each jompus is not mean. Every vumpus is a lorpus. Each yumpus is not hot. Every gorpus is not snowy. Every yumpus is a tumpus. Wumpuses are liquid. Every vumpus is a jompus. Jompuses are brimpuses. Lempuses are gorpuses. Each lempus is a vumpus. Every dumpus is a wumpus. Max is a dumpus. Max is a yumpus.
+# Question:
+True or false: Max is not orange.
+# Reasoning:
+Max is a dumpus. Every dumpus is not orange. Max is not orange.
+# Answer:
+The answer is: True.
+####
+# Context:
+Every numpus is a zumpus. Sterpuses are orange. Rompuses are yumpuses. Each vumpus is fast. Impuses are sterpuses. Numpuses are feisty. Each lorpus is transparent. Zumpuses are lorpuses. Zumpuses are earthy. Each numpus is a vumpus. Yumpuses are not dull. Lempuses are not temperate. Lempuses are brimpuses. Rompuses are impuses. Each impus is a numpus. Impuses are large. Rompuses are wooden. Each zumpus is a gorpus. Polly is a lempus. Polly is a zumpus.
+# Question:
+True or false: Polly is earthy.
+# Reasoning:
+Polly is a zumpus. Zumpuses are earthy. Polly is earthy.
+# Answer:
+The answer is: True.
+####
+# Context:
+{{context}}
+# Question:
+{{question}}
+# Reasoning:

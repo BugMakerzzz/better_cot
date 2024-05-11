@@ -18,7 +18,7 @@ if __name__ == '__main__':
     parser.add_argument('--proxy', type=str, default='Llama2_13b')
     parser.add_argument('--method', type=str, default='cot')
     parser.add_argument('--target', type=str, default='pans')
-    parser.add_argument('--cand_num', type=int, default=3)
+    # parser.add_argument('--cand_num', type=int, default=3)
 
     args = parser.parse_args()
     set_seed(17)
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     dataset = args.dataset 
     proxy = args.proxy
     method = args.method
-    num = args.cand_num
+    # num = args.cand_num
     
     dataloader = DataLoader(dataset=dataset, n_samples=n_samples)
     data = dataloader.load_data(method='attr_cot', n_examples=n_examples)
@@ -49,7 +49,7 @@ if __name__ == '__main__':
         # if num > len(item['path'][-1]['inp_attr']):
         #     attrs = item['path'][-1]['inp_attr']
         # else:
-        attrs = item['path'][-1]['inp_attr'][:num]
+        attrs = item['path'][-1]['inp_attr'][:3]
         attr_sents = [x['inp'] for x in attrs]
         # attr_sent = '. '.join(attr_sents)
         path_dic[item['id']] = attr_sents
@@ -72,7 +72,7 @@ if __name__ == '__main__':
         model_wrapper = ModelWrapper(model_name)
         model = model_wrapper.model
         tokenizer = model_wrapper.tokenizer
-        max_new_tokens = 200
+        max_new_tokens = 500
         split_token = '####'
         result = []
         correct = 0
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     result_dir = f'../result/{dataset}/{model_name}/'
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
-    result_path = os.path.join(result_dir, f'attr_cot_n{num}_e{n_examples}_s{n_samples}.json')
+    result_path = os.path.join(result_dir, f'attr_cot_e{n_examples}_s{n_samples}.json')
     with open(result_path, 'w') as f:
         json.dump(result, f, indent=4)
         f.close()

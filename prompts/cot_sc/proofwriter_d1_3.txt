@@ -7,8 +7,6 @@ Based on the above information, is the following statement true, false, or unkno
 # Options:
 A) True
 B) False
-# Hint:
-You should focus on: Gary is smart.
 # Reasoning:
 Gary is smart. Gary is furry. Smart, furry things are round. So Gary is round.
 # Answer:
@@ -21,8 +19,6 @@ Based on the above information, is the following statement true, false, or unkno
 # Options:
 A) True
 B) False
-# Hint:
-You should focus on: If someone is blue then they like the bear.
 # Reasoning:
 The squirrel is blue. If someone is blue then they like the bear. So The squirrel likes the bear.
 # Answer:
@@ -35,8 +31,6 @@ Based on the above information, is the following statement true, false, or unkno
 # Options:
 A) True
 B) False
-# Hint:
-You should focus on: Harry is smart.
 # Reasoning:
 Harry is smart. If something is smart then it is blue. So Harry is blue.
 # Answer:
@@ -48,3 +42,4 @@ The correct option is: B
 {{question}}
 # Options:
 {{options}}
+# Reasoning:

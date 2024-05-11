@@ -7,6 +7,8 @@ Based on the above information, is the following statement true, false, or unkno
 # Options:
 A) True
 B) False
+# Hint:
+You should focus on: All furry people are green.
 # Reasoning:
 Anne is kind. Kind people are furry. So Anne is furry. All furry people are green. So Anne is green.
 # Answer:
@@ -18,7 +20,9 @@ The bald eagle chases the mouse. The bald eagle is green. The bald eagle is youn
 Based on the above information, is the following statement true, false, or unknown? The bald eagle does not eat the mouse.
 # Options:
 A) True
-B) False
+B) 
+# Hint:
+You should focus on: The bald eagle is young.
 # Reasoning:
 The bald eagle is young. If someone is young then they are rough. So The bald eagle is rough. If someone is rough then they eat the mouse. So The bald eagle eats the mouse.
 # Answer:
@@ -31,6 +35,8 @@ Based on the above information, is the following statement true, false, or unkno
 # Options:
 A) True
 B) False
+# Hint:
+You should focus on: Quiet people are nice.
 # Reasoning:
 Dave is quiet. Quiet people are nice. So Dave is nice. All nice people are white. So Dave is white.
 # Answer:
@@ -42,4 +48,3 @@ The correct option is: B
 {{question}}
 # Options:
 {{options}}
-# Reasoning:
