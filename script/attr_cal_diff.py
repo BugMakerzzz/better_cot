@@ -22,10 +22,10 @@ dataset = args.dataset
 target = args.target
 fig_mode = args.fig_mode
 
-# path_file = f'../result/{dataset}/{model_name}/cot_{model_name}_{target}_paths_e{n_examples}_s{n_samples}.json'
-# if not os.path.exists(path_file):
-path_file = f'../result/{dataset}/{model_name}/input_{target}_paths_e{n_examples}_s{n_samples}.json'
-data_file = f'../result/{dataset}/{model_name}/cot_e{n_examples}_s500.json'
+path_file = f'../result/{dataset}/{model_name}/cot_{model_name}_{target}_paths_e{n_examples}_s{n_samples}.json'
+if not os.path.exists(path_file):
+    path_file = f'../result/{dataset}/{model_name}/input_{target}_paths_e{n_examples}_s{n_samples}.json'
+data_file = f'../result/{dataset}/{model_name}/cot_e{n_examples}_s100.json'
 
 
 with open(path_file, 'r') as f:
@@ -58,7 +58,7 @@ for item in data:
     elif target in ['pans']:
         if not item['cor_flag']:
             continue
-        cot = cots[idx]
+        cot = cots[idx]['response']
         path = item['path'][-1]
         attr = []
         for tup in path['inp_attr'][:3]:
@@ -66,7 +66,7 @@ for item in data:
                 continue
             else:
                 attr.append(tup['attr'])
-        attr = np.mean(np.array(attr))
+        attr = np.array(attr).min()
     # elif target in ['pcot']:
     #     path = item['path'][-1]
     #     if fig_mode == 'type':

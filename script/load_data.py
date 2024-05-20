@@ -154,10 +154,8 @@ class DataLoader(object):
         data = load_dataset(self.dataset, self.n_samples)
         prompt = load_prompt(self.dataset, method, n_examples)
         for item in data:
-            if 'question' in item.keys():
-                item['raw_question'] = item['question']
-            else:
-                item['raw_question'] = f"{item['number1']} {item['number2']}"
+            item['raw_question'] = item['question']
+            item['question_target'] = item['question']
             if 'context' in item.keys():
                 item['raw_question'] = item['context'] + ' ' + item['raw_question']
             if 'options' in item.keys():
@@ -165,4 +163,8 @@ class DataLoader(object):
             item['question'] = format_prompt(prompt, item)
         return data 
     
+    def reformat_question(self, item, method, n_examples):
+        prompt = load_prompt(self.dataset, method, n_examples)
+        question = format_prompt(prompt, item)
+        return question
     

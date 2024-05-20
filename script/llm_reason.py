@@ -10,7 +10,7 @@ from gpt_reason import gpt_reason
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='Llama2_13b')
 parser.add_argument('--n_samples', type=int, default=500)
-parser.add_argument('--n_examples', type=int, default=5)
+parser.add_argument('--n_examples', type=int, default=3)
 parser.add_argument('--dataset', type=str, default='proofwriter')
 parser.add_argument('--method', type=str, default='cot')
 args = parser.parse_args()
@@ -80,6 +80,8 @@ else:
             if max_answer == item['answer']:
                 cor_flag = True
                 correct += 1       
+        elif method == 'sr':
+            
         else:
             if model_name.startswith('Llama3'):
                 stop_token = "<|eot_id|>"
@@ -90,6 +92,7 @@ else:
             else:
                 outputs = model.generate(input_ids, max_new_tokens=max_new_tokens)
                 response = tokenizer.decode(outputs[0][len(input_ids[0]):], skip_special_tokens=True).split(split_token)[0]
+            
             if method == 'gold_cot':
                 response = item['reason'] + response
             if method == 'decom':

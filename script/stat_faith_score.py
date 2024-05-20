@@ -59,76 +59,56 @@ def find_step_index(tokens):
     return step_idx_dic
 
 if __name__ == '__main__':
-    if score == 'step':
-        results = []
-        result_path = f'../result/{dataset}/{model_name}/input_{target}_step_score_e{n_examples}_s{n_samples}.json'
-        bad_tokens = ['<0x0A>', '.', '?']
-        for item in score_data[:n_samples]:
-            input_tokens = item['inp']
-            output_tokens = item['out']
-            scores = np.array(item['scores'])
-            attrs = []
-            if target in ['cans', 'qans']:
-                temp_tokens = input_tokens
-                input_tokens = output_tokens
-                output_tokens = temp_tokens
-                scores = np.array(item['scores']).T
-            if len(output_tokens) < 20:
-                continue
-            if dataset in ['gsm8k', 'aqua'] and output_tokens[0] != '<0x0A>':
-                continue
-            start_idx = 0 
-            for i in range(num):
-                ref_idx = list(range(start_idx, len(output_tokens) * (i+1) // num))
-                start_idx = len(output_tokens) * (i+1) // num
-                input_idx = list(range(len(input_tokens)))
-                if target == 'cot':    
-                    for idx in input_idx[::-1]:
-                        if idx >= ref_idx[0]:
-                            input_idx.pop(idx)
+    results = []
+    result_path = f'../result/{dataset}/{model_name}/{method}_{target}_{score}_score_e{n_examples}_s{n_samples}.json'
+    bad_tokens = ['<0x0A>', '.', '?', '\u2581_']
+    diff_scores = []
+    for item in score_data[:n_samples]:
+        input_tokens = item['inp']
+        output_tokens = item['out']
+        scores = np.array(item['scores'])
+        attrs = []
+        if target in ['cans', 'pans', 'qans', '']:
+            temp_tokens = input_tokens
+            input_tokens = output_tokens
+            output_tokens = temp_tokens
+            scores = np.array(item['scores']).T
+        if len(output_tokens) < 20:
+            continue
+        # if dataset in ['gsm8k', 'aqua'] and output_tokens[0] != '<0x0A>':
+            # continue
+        start_idx = 0 
+        for i in range(num):
+            ref_idx = list(range(start_idx, len(output_tokens) * (i+1) // num))
+            start_idx = len(output_tokens) * (i+1) // num
+            input_idx = list(range(len(input_tokens)))
+            if target == 'cot':    
                 for idx in input_idx[::-1]:
-                    if input_tokens[idx] in bad_tokens:
-                        input_idx.pop(input_idx.index(idx))
-                for idx in ref_idx[::-1]:
-                    if output_tokens[idx] in bad_tokens:
-                        ref_idx.pop(ref_idx.index(idx))
-                if not input_idx or not ref_idx:
-                    continue
-                temp_score = scores[input_idx,:]
-                temp_score = temp_score[:,ref_idx]
-
-                # print(ref_idx)
-                attr = temp_score.mean()
-                attrs.append(attr)
-            if 'cot_flag' not in item.keys():
-                item['cot_flag'] = None
-            result_msg = {'id':item['id'], 'cor_flag':item['cor_flag'], 'cot_flag':item['cot_flag'], 'attr':attrs}
-            results.append(result_msg)
-        with open(result_path, 'w') as f:
-            json.dump(results, f, indent=4)
-    else:
-        sum_attr = 0
-        cnt = 0
-        for item in score_data[:n_samples]:
-            input_tokens = item['inp']
-            output_tokens = item['out']
-            scores = np.array(item['scores'])
-            
-            input_step_dic = find_step_index(input_tokens)
-            output_step_dic = find_step_index(output_tokens)
-            
-            step_attr_ls = []
-            for k1, v1 in output_step_dic.items():
-                for k2, v2 in input_step_dic.items():
-                    if target == 'cot' and k2 >= k1-1:
-                        continue
-                    attr = scores[k2:v2, k1:v1].mean()
-                    step_attr_ls.append(attr)
-            
-            if not step_attr_ls:
+                    if idx >= ref_idx[0]:
+                        input_idx.pop(idx)
+            for idx in input_idx[::-1]:
+                if input_tokens[idx] in bad_tokens:
+                    input_idx.pop(input_idx.index(idx))
+            for idx in ref_idx[::-1]:
+                if output_tokens[idx] in bad_tokens:
+                    ref_idx.pop(ref_idx.index(idx))
+            if not input_idx or not ref_idx:
                 continue
-            attr = np.mean(np.array(step_attr_ls))
-            sum_attr += attr
-            cnt += 1
-         
-        print(f"{dataset}\t{target}\t{sum_attr / cnt}")
+            temp_score = scores[input_idx,:]
+            temp_score = temp_score[:,ref_idx]
+
+            # print(ref_idx)
+            attr = temp_score.mean()
+            attrs.append(attr)
+        if 'cot_flag' not in item.keys():
+            item['cot_flag'] = None
+        if score == 'diff':
+            attrs = [attrs[i]-attrs[i-1] for i in range(1,len(attrs))]
+            diff_score = np.mean(np.array(attrs))
+            diff_scores.append(diff_score)
+        result_msg = {'id':item['id'], 'cor_flag':item['cor_flag'], 'cot_flag':item['cot_flag'], 'attr':attrs}
+        results.append(result_msg)
+    with open(result_path, 'w') as f:
+        json.dump(results, f, indent=4)
+    if score == 'diff':
+        print(np.mean(np.array(diff_scores)))

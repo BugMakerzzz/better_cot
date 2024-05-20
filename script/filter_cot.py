@@ -2,10 +2,11 @@ import json
 import numpy as np
 import argparse
 import torch
+import re
 from tqdm import tqdm
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, set_seed
 from config import *
-from metrics import get_bleu
+from metrics import get_bleu, get_rouge
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='Llama2_13b')
@@ -43,16 +44,68 @@ if nli_check:
     check_tokenizer = AutoTokenizer.from_pretrained(deberta_path)
 
 
-def check_paths(target):
+def check_paths(dataset):
+    def extract_obj(sent):
+        pattern = r'\b(\w+)\s+(is|are)\b'
+        matches = re.findall(pattern, sent)
+        return matches[0][0] 
+
+    pcot_path_file = f'../result/{dataset}/{model_name}/{method}_{proxy}_pcot_diff_paths_e{n_examples}_s{n_samples}.json'
+    cot_path_file = f'../result/{dataset}/{model_name}/{method}_{proxy}_pcot_paths_e{n_examples}_s{n_samples}.json'
+    with open(pcot_path_file, 'r') as f:
+        pcot_path_data = json.load(f)
+        f.close()
+    with open(cot_path_file, 'r') as f:
+        cot_path_data = json.load(f)
+        f.close()
+
+    scores_dic = {}
+    for i in range(len(pcot_path_data)):
+        pcot_item = pcot_path_data[i]
+        cot_item = cot_path_data[i]
+        if dataset.startswith('prontoqa'):   
+            name = extract_obj(cot_item['path'][0]['ref'])
+        else:
+            name = "None"
+        scores = []
+        extra_score = 0
+        for j in range(len(pcot_item['path'])):
+            cot_path = cot_item['path'][j]
+            pcot_path = pcot_item['path'][j]
+            if j != 0 and name in cot_path['ref']:
+                # extra_score = 0.01
+                continue
+                # last_ref = cot_item['path'][j-1]
+                
+                # score = cot_path['inp_attr'][0]['attr']
+            else:
+                score = pcot_path['diff_inp_attr'][0][1]
+            scores.append(score)
+        if scores:
+            score = np.mean(np.array(scores)) + extra_score
+        else:
+            score = 0
+        id = cot_item['id']
+        if id in scores_dic.keys():
+            scores_dic[id].append(score)
+        else:
+            scores_dic[id] = [score]
+     
+    return scores_dic
+
+def check_target_paths(target):
     scores = {}
-    path_file = f'../result/{dataset}/{model_name}/{method}_{proxy}_{target}_paths_e{n_examples}_s{n_samples}.json'
+    if target == 'pcot':
+        path_file = f'../result/{dataset}/{model_name}/{method}_{proxy}_{target}_diff_paths_e{n_examples}_s{n_samples}.json'
+    else:
+        path_file = f'../result/{dataset}/{model_name}/{method}_{proxy}_{target}_paths_e{n_examples}_s{n_samples}.json'
     with open(path_file, 'r') as f:
         path_data = json.load(f)
         f.close()
     for item in path_data: 
         if target == 'cans':
             path = item['path'][-1]['inp_attr']
-            score = np.array([x['attr'] for x in path]).min()
+            score = np.array([x['attr'] for x in path]).mean()
         elif target == 'cot':
             path = item['path'][-1]['inp_attr']
             if path:
@@ -61,11 +114,12 @@ def check_paths(target):
                 score = 0
         elif target == 'pcot':
             score = []
+            
             for tup in item['path'][:-1]:
-                inp_attr = tup['inp_attr'][0]['attr']
+                inp_attr = tup['diff_inp_attr'][0][1]
                 score.append(inp_attr)
             if score:
-                score = np.array(score).min()
+                score = np.array(score).mean()
             else:
                 score = 0
         id = item['id']
@@ -96,11 +150,13 @@ def check_nli(question, statement, dataset):
 results = []
 correct = 0
 if cans_check:
-    cans_scores = check_paths(target='cans')
+    cans_scores = check_target_paths(target='cans')
 if pcot_check:
-    pcot_scores = check_paths(target='pcot')
+    # pcot_scores = check_target_paths(target='pcot')
+    pcot_scores = check_paths(dataset)
 if cot_check:
-    cot_scores = check_paths(target='cot')
+    cot_scores = check_target_paths(target='cot')
+
     
 data_dic = {}
 for item in data:
@@ -127,21 +183,22 @@ for id, items in tqdm(data_dic.items()):
     if cans_check and id in cans_scores.keys():
         cans_score = cans_scores[id] 
         for i in range(item_num):
-            if answers[i] == 'None':
+            if answers[i] not in ['True', 'False', 'A', 'B', 'C']:
                 cans_score.insert(i, 0)
     else:
         cans_score = item_num * [0]       
     if pcot_check and id in pcot_scores.keys():
         pcot_score = pcot_scores[id] 
         for i in range(item_num):
-            if answers[i] == 'None':
+            print(answers[i])
+            if answers[i] not in ['True', 'False', 'A', 'B', 'C']:
                 pcot_score.insert(i, 0)
     else:
         pcot_score = item_num * [0]
     if cot_check and id in cot_scores.keys():
         cot_score = cot_scores[id] 
         for i in range(item_num):
-            if answers[i] == 'None':
+            if answers[i] not in ['True', 'False', 'A', 'B', 'C']:
                 cot_score.insert(i, 0)
     else:
         cot_score = item_num * [0]
@@ -149,7 +206,7 @@ for id, items in tqdm(data_dic.items()):
     final_answers = []
     scores = []    
     for i in range(item_num):
-        if nli_check:
+        if nli_check and answers[i] != 'C':
             response = responses[i] 
             if dataset.startswith('proofwriter'):
                 question_stem = question.split('?')[-1].split('.')[0].strip()
@@ -162,6 +219,8 @@ for id, items in tqdm(data_dic.items()):
             pred = check_nli(question=question_stem, statement=last_step, dataset=dataset)
         else:
             pred = answers[i]
+        print(i)
+        print(pcot_score)
         score = cans_score[i] + pcot_score[i] + cot_score[i]
         if pred:
             scores.append(score)
@@ -207,8 +266,10 @@ for id, items in tqdm(data_dic.items()):
            'cor_flag':cor_flag}
     results.append(msg)
 results.append({'acc': correct / n_samples})
-if dataset not in ['folio']:
-    results.append(get_bleu(results, {'gen':'f_response', 'ref':'reason'}))
+# print(results)
+# bleu = get_rouge(results, {'gen':'f_response', 'ref':'reason'})
+# print(bleu)
+# results.append(bleu)
 
 result_path = f'../result/{dataset}/{model_name}/filter_cot_e{n_examples}_s{n_samples}'
 if nli_check:

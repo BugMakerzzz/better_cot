@@ -1,7 +1,7 @@
 import json
 import jsonlines
 import re
-from metrics import get_bleu
+from metrics import get_bleu, get_rouge
 
 def transfer_proofwriter(item):
     def prepare_reason(proof, index_dic):
@@ -145,12 +145,25 @@ def extract_answer():
 
 
 def cal_cot_bleu():
-    path = '../result/coinflip/Llama2_13b/cot_e3_s100.json'
+    path = '../result/prontoqa_d2/Llama2_13b/cot_e3_s100.json'
     with open(path, 'r') as f:
         result = json.load(f)
         f.close()
     bleu = get_bleu(result, {'gen':'response', 'ref':'reason'})
     result.append(bleu)
+    with open(path, 'w') as f:
+        json.dump(result, f, indent=4)
+        f.close()
+    return 
+
+def cal_cot_rouge():
+    path = '../result/proofwriter_d1/Llama2_13b/cot_e3_s100.json'
+    with open(path, 'r') as f:
+        result = json.load(f)
+        f.close()
+    bleu = get_rouge(result, {'gen':'response', 'ref':'reason'})
+    
+    result[-1].update(bleu)
     with open(path, 'w') as f:
         json.dump(result, f, indent=4)
         f.close()
@@ -177,7 +190,8 @@ def make_proof_dataset():
     with open(result_path, 'w') as f:
         json.dump(results, f, indent=4)
 
+
 if __name__ == '__main__':
-    cal_cot_bleu() 
+    cal_cot_rouge() 
     
   

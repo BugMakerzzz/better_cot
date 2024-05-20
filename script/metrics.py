@@ -84,44 +84,51 @@ def draw_heat(x_labels, y_labels, scores, path):
     
     
 def draw_line(data, path, names):
+    
     sns.set_theme(style="whitegrid",font='Times New Roman')
-    custom_colors = ['#7976A2', '#4A5E65', '#E29957', '#86B5A1', '#B95A58', '#4292C6']
+    # custom_colors = ['#7976A2', '#4A5E65', '#E29957', '#86B5A1', '#B95A58', '#4292C6']
+    custom_colors = ['#7976A2', '#4A5E65', '#E29957', '#86B5A1', '#B95A58', '#4292C6'][::-1]
     ax = sns.lineplot(x = names[0], 
                       y = names[1], 
                       hue = names[2],
                     #   palette=sns.color_palette("hls", n_colors=6, desat=.6), 
                       marker = 'o',
                       palette=sns.color_palette(custom_colors),
+                    #   ci=None,
                       data=data)
-    # ax.lines[4].set_linestyle("--")
-    ax.legend(loc='upper left')
+    # ax.lines[2].set_linestyle("--")
+    ax.set_xlabel(ax.get_xlabel(), fontsize=22)  # X轴标签
+    ax.set_ylabel(ax.get_ylabel(), fontsize=22)  # Y轴标签
+    ax.legend(fontsize='18', loc='upper left')  # 图例
+
+    # 调整刻度文字大小
+    ax.tick_params(axis='both', which='major', labelsize=20)
+
+    # 调整图像边距
+    plt.subplots_adjust(left=0.15, right=0.99, top=0.99, bottom=0.16)
     plt.savefig(path)
     plt.close()    
     
-def draw_box(samples, cot_flags, scores, path, mode='type'):
-    data = {'sample':samples, 'cot_flag':cot_flags, 'score':scores}
-    data = DataFrame(data)
-    custom_colors = ['#7976A2', '#4A5E65', '#E29957', '#86B5A1', '#B95A58', '#4292C6']
+def draw_box(data, path, names):
     sns.set_theme(style="whitegrid",font='Times New Roman')
-    if mode == 'type':
-        ax = sns.boxplot(x='cot_flag', 
-                        y='score', 
-                        #  hue='cot_flag',
-                        data=data,
-                        flierprops={'marker':'d', 'markerfacecolor':'black', 'markersize':1},
-                        # palette=sns.color_palette("hls", 4, desat=.6)
-                        palette=sns.color_palette(custom_colors)
-                        )
-    else:
-        plt.figure(dpi=100, figsize=(16, 8))
-        ax = sns.boxplot(x='sample', 
-                        y='score', 
-                        hue='cot_flag',
-                        data=data,
-                        flierprops={'marker':'d', 'markerfacecolor':'black', 'markersize':1},
-                        palette=sns.color_palette("hls", 4, desat=.6)
-                        )
- 
+    custom_colors = ['#7976A2', '#4A5E65', '#E29957', '#86B5A1', '#B95A58', '#4292C6']
+    ax = sns.boxplot(x=names[0], 
+                    y=names[1], 
+                    #  hue='cot_flag',
+                    data=data,
+                    flierprops={'marker':'d', 'markerfacecolor':'black', 'markersize':1},
+                    # palette=sns.color_palette("hls", 4, desat=.6)
+                    palette=sns.color_palette(custom_colors)
+                    )
+    ax.set_xlabel(ax.get_xlabel(), fontsize=22)  # X轴标签
+    ax.set_ylabel(ax.get_ylabel(), fontsize=22)  # Y轴标签
+    # ax.legend(fontsize='18', loc='upper left')  # 图例
+
+    # 调整刻度文字大小
+    ax.tick_params(axis='both', which='major', labelsize=20)
+
+    # 调整图像边距
+    plt.subplots_adjust(left=0.17, right=0.99, top=0.98, bottom=0.16)
     plt.savefig(path)
     plt.close()
     

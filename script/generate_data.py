@@ -58,7 +58,7 @@ def generate_coinflip():
         reason = ""
         for j in range(10):
             if j + 1 <= k:
-                reason += f"The coin was flipped by {name[j]}. "
+                reason += f"{name[j]} flips the coin. "
                 context.append(f"{name[j]} flips the coin.")
             else:
                 context.append(f"{name[j]} does not flip the coin.")

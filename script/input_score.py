@@ -50,7 +50,7 @@ def cal_attr(expl, L=10, b=5, p=2, eps=1e-7):
 
 def prepare_idx(dataset, target, method, inps):
     if target == 'cans':
-        if dataset in ['gsm8k', 'aqua']:
+        if dataset in ['gsm8k', 'aqua', 'gsmic']:
             start_idx = [i for i, v in enumerate(inps) if v == "#"][-2] + 5
         else:
             start_idx = [i for i, v in enumerate(inps) if v == ":"][-3] + 1      
@@ -73,14 +73,21 @@ def prepare_idx(dataset, target, method, inps):
                 start_idx = [i for i, v in enumerate(inps) if v == ":"][-6] + 1
         end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
     elif target == 'pans':
-        if dataset in ['gsm8k', 'aqua']:
+        if dataset in ['aqua']:
             if method == 'direct':
                 start_idx = [i for i, v in enumerate(inps) if v == "#"][-3] + 3 
                 end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
             else:
                 start_idx = [i for i, v in enumerate(inps) if v == "#"][-4] + 3 
                 end_idx = [i for i, v in enumerate(inps) if v == "#"][-3] - 1
-        elif dataset in ['addition', 'lastletter', 'coinflip']:
+        elif dataset in ['gsm8k']:
+            if method == 'direct':
+                start_idx = [i for i, v in enumerate(inps) if v == "#"][-3] + 3 
+                end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
+            else:
+                start_idx = [i for i, v in enumerate(inps) if v == "#"][-3] + 3 
+                end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
+        elif dataset in ['addition', 'lastletter', 'coinflip', 'wino', 'siqa']:
             if method == 'direct':
                 start_idx = [i for i, v in enumerate(inps) if v == ":"][-4] + 1
                 end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
@@ -108,10 +115,13 @@ def prepare_idx(dataset, target, method, inps):
             start_idx = [i for i, v in enumerate(inps) if v == ":"][-1] + 1
         end_idx = len(inps)
     elif target == 'pcot':
-        if dataset in ['gsm8k', 'aqua']:
+        if dataset in ['aqua']:
             start_idx = [i for i, v in enumerate(inps) if v == "#"][-3] + 3
             end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
-        elif dataset in ['addition', 'lastletter', 'coinflip']:
+        elif dataset in ['gsm8k']:
+            start_idx = [i for i, v in enumerate(inps) if v == "#"][-2] + 3
+            end_idx = [i for i, v in enumerate(inps) if v == "#"][-1] - 1
+        elif dataset in ['addition', 'lastletter', 'coinflip', 'wino', 'siqa']:
             start_idx = [i for i, v in enumerate(inps) if v == ":"][-3] + 1
             end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
         elif dataset in ['prontoqa', 'prontoqa_d2']:
@@ -121,8 +131,11 @@ def prepare_idx(dataset, target, method, inps):
             start_idx = [i for i, v in enumerate(inps) if v == ":"][-4] + 1
             end_idx = [i for i, v in enumerate(inps) if v == "#"][-3] - 1
     else:
-        if dataset in ['gsm8k', 'aqua']:
+        if dataset in ['gsm8k', 'aqua', 'gsmic']:
             start_idx = [i for i, v in enumerate(inps) if v == "#"][-2] + 3
+        elif dataset in ['prontoqa', 'prontoqa_d2']:
+            start_idx = [i for i, v in enumerate(inps) if v == ":"][-4] + 1
+            end_idx = [i for i, v in enumerate(inps) if v == "#"][-2] - 1
         else:
             start_idx = [i for i, v in enumerate(inps) if v == ":"][-4] + 1
         end_idx = [i for i, v in enumerate(inps) if v == "#"][-1] - 1
@@ -131,7 +144,9 @@ def prepare_idx(dataset, target, method, inps):
 
 
 def main():
-    result_path = f'../result/{dataset}/{model_name}/{method}_e{n_examples}_s100.json'
+    result_path = f'../result/{dataset}/{model_name}/{method}_e{n_examples}_s{n_samples}.json'
+    if method == 'gold_cot':
+        result_path = f'../result/{dataset}/{model_name}/cot_e{n_examples}_s{n_samples}.json'
     with open(result_path, 'r') as f:
         if method == 'attr_cot':
             results = json.load(f)[:-1]
@@ -141,8 +156,10 @@ def main():
     
     model = ModelWrapper(proxy)
     dataloader = DataLoader(dataset=dataset, n_samples=500)
-    if method == 'attr_cot':
+    if method in ['attr_cot', 'gold_cot']:
         data = dataloader.load_data(method='cot', n_examples=3)
+    elif method == 'inter_cot':
+        data = results
     else:
         data = dataloader.load_data(method=method, n_examples=3)
     wrap_question_dic = {item['id']:item['question'] for item in data}
@@ -158,12 +175,13 @@ def main():
             input = input + prefix + ': '
             ref = pred.strip().rstrip('.')  
         else:
-            if method == 'gold_cot':
-                input = input.split(':')[-2] + ':\n'
-
             try:
                 cot, answer = item['response'].split('\n# Answer:\n')
                 cot = cot.strip()
+                if method == 'gold_cot':
+                    cot = item['reason']
+                    if isinstance(cot, list):
+                        cot = cot[0]
                 prefix, pred = answer.split(': ')
             except:
                 # print(item['id'])
@@ -172,7 +190,9 @@ def main():
                 ref = cot
             else:
                 input = input + cot + '\n# Answer:\n' + prefix + ': '
-                ref = pred.strip().rstrip('.')   
+                ref = pred.strip().rstrip('.')
+                if method == 'gold_cot':
+                    ref = item['label']   
         
         inps, refs, scores = model.input_explain(input, ref)
         start_idx, end_idx = prepare_idx(dataset, target, method, inps)

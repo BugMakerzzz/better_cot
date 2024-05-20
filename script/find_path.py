@@ -58,6 +58,7 @@ def find_step_index(tokens, tokenizer):
     step_idx_dic = {}
     start = 0
     end = 0
+    num = 0
     for i in range(len(tokens)):
         token = tokens[i]
         if token == '<0x0A>' and i == 0:
@@ -70,7 +71,8 @@ def find_step_index(tokens, tokenizer):
                 if end == len(tokens) - 1 and start == 0:
                     end += 1
                 step = tokenizer.decode(tokenizer.convert_tokens_to_ids(tokens[start:end]))
-                step_idx_dic[start] = {'end':end, 'step':step}
+                step_idx_dic[start] = {'end':end, 'step':step, 'num':num}
+                num += 1
                 start = i + 1
         
     return step_idx_dic
@@ -91,23 +93,33 @@ for item in score_data:
     output_step_dic = find_step_index(output_tokens, tokenizer)
     
     step_attr_ls = []
+    direct_path = []
     for k1, v1 in output_step_dic.items():
         s1 = k1
         e1 = v1['end']
+        n1 = v1['num']
         score_ls = []
         for k2, v2 in input_step_dic.items():
             s2 = k2
             e2 = v2['end']
+            n2 = v2['num']
             if target == 'cot' and s2 >= s1-1:
                 continue
             attr = scores[s2:e2, s1:e1].mean()
-            msg = {'inp_idx':(s2, e2),'inp':v2['step'], 'attr':attr}
+            msg = {'inp_idx':(s2, e2),'inp':v2['step'], 'attr':attr, 'num':n2}
             score_ls.append(msg)
         score_ls = sorted(score_ls, key=lambda x: x['attr'], reverse=True)
+        if len(score_ls) > 1:
+            n2 = f"{score_ls[0]['num']}&{score_ls[1]['num']}"
+        elif len(score_ls) == 1:
+            n2 = f"{score_ls[0]['num']}&-1"
+        else:
+            n2 = "-1&-1"
         step_attr_ls.append({'ref_idx':(s1, e1), 'ref':v1['step'], 'inp_attr':score_ls})
+        direct_path.append(f"{n2}->{n1}")
     if 'cot_flag' not in item.keys():
         item['cot_flag'] = None
-    result_msg = {'id':item['id'], 'cor_flag':item['cor_flag'], 'cot_flag':item['cot_flag'], 'path':step_attr_ls}
+    result_msg = {'id':item['id'], 'cor_flag':item['cor_flag'], 'cot_flag':item['cot_flag'], 'direct':direct_path, 'path':step_attr_ls}
     
     results.append(result_msg)
     

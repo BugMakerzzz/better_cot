@@ -5,9 +5,9 @@ A coin is heads up. Tyler flips the coin. Isabella flips the coin. Serenity does
 # Question:
 Is the coin still heads up?
 # Hint:
-You should focus on: The coin was flipped by Tyler.
+You should focus on: Riley flips the coin.
 # Reasoning:
-The coin was flipped by Brielle. The coin was flipped by Isaac. The coin was flipped by Tyler. The coin was flipped by Riley. The coin was flipped by Isabella. So the coin was flipped 5 times, which is an odd number. The coin started heads up, so after an odd number of flips, it will be tails up.
+Brielle flips the coin. Isaac flips the coin. Tyler flips the coin. Riley flips the coin. Isabella flips the coin. So the coin was flipped 5 times, which is an odd number. The coin started heads up, so after an odd number of flips, it will be tails up.
 # Answer:
 The answer is: no.
 ####
@@ -16,9 +16,9 @@ A coin is heads up. Mackenzie does not flip the coin. Elizabeth flips the coin. 
 # Question:
 Is the coin still heads up?
 # Hint:
-You should focus on: The coin was flipped by Nora.
+You should focus on: Nora flips the coin.
 # Reasoning:
-The coin was flipped by Elizabeth. The coin was flipped by Hailey. The coin was flipped by Nora. The coin was flipped by Genesis. So the coin was flipped 4 times, which is an even number. The coin started heads up, so after an even number of flips, it will still be heads up.
+Elizabeth flips the coin. Hailey flips the coin. Nora flips the coin. Genesis flips the coin. So the coin was flipped 4 times, which is an even number. The coin started heads up, so after an even number of flips, it will still be heads up.
 # Answer:
 The answer is: yes.
 ####
@@ -27,9 +27,9 @@ A coin is heads up. Kaylee does not flip the coin. John does not flip the coin. 
 # Question:
 Is the coin still heads up?
 # Hint:
-You should focus on: The coin was flipped by Julia.
+You should focus on: Julia flips the coin.
 # Reasoning:
-The coin was flipped by Julia. So the coin was flipped 1 times, which is an odd number. The coin started heads up, so after an odd number of flips, it will be tails up.
+Julia flips the coin. So the coin was flipped 1 times, which is an odd number. The coin started heads up, so after an odd number of flips, it will be tails up.
 # Answer:
 The answer is: no.
 ####

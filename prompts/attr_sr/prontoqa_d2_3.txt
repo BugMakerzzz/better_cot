@@ -1,0 +1,39 @@
+Please act as a logical teacher and correct reasoning according to the hint and context.
+####
+# Context:
+Each lorpus is not transparent. Every gorpus is slow. Sterpuses are gorpuses. Every lempus is angry. Every rompus is floral. Lempuses are lorpuses. Jompuses are brimpuses. Each wumpus is a tumpus. Each numpus is overcast. Gorpuses are yumpuses. Brimpuses are sterpuses. Every sterpus is a zumpus. Every wumpus is loud. Zumpuses are nervous. Each brimpus is not bright. Each gorpus is a dumpus. Jompuses are temperate. Each yumpus is red. Lempuses are jompuses. Jompuses are rompuses. Each brimpus is a numpus. Sterpuses are small. Sally is a jompus. Sally is a wumpus.
+# Question:
+True or false: Sally is bright.
+# Hint:
+The reasoning should contains the statement: Each brimpus is not bright.
+# Reasoning:
+Sally is a wumpus. Each wumpus is a tumpus. Each tumpus is not bright. Sally is not bright.
+# Answer:
+Sally is a jompus. Jompuses are brimpuses. Sally is a brimpus. Each brimpus is not bright. Sally is not bright.
+####
+# Context:
+Lempuses are tumpuses. Every sterpus is a grimpus. Each sterpus is an impus. Jompuses are sterpuses. Every zumpus is dull. Each sterpus is not muffled. Jompuses are not slow. Each grimpus is a yumpus. Every dumpus is rainy. Grimpuses are dumpuses. Jompuses are zumpuses. Each lempus is transparent. Every grimpus is not cold. Each impus is small. Wren is a jompus. Wren is a lempus.
+# Question:
+True or false: Wren is not muffled.
+# Hint:
+The reasoning should contains the statement: Wren is a jompus.
+# Reasoning:
+Wren is a lempus. Lempus are sterpuses. Wren is a sterpus. Each sterpus is not muffled. Wren is not muffled.
+# Answer:
+Wren is a jompus. Jompuses are sterpuses. Wren is a sterpus. Each sterpus is not muffled. Wren is not muffled.
+####
+# Context:
+Each yumpus is a sterpus. Yumpuses are not earthy. Every dumpus is not sour. Lempuses are not overcast. Every impus is a grimpus. Sterpuses are lorpuses. Sterpuses are not hot. Every yumpus is a dumpus. Impuses are happy. Every sterpus is a lempus. Polly is a yumpus. Polly is an impus.
+# Question:
+True or false: Polly is not hot.
+# Hint:
+The reasoning should contains the statement: Sterpuses are not hot.
+# Reasoning:
+Polly is a yumpus. Each yumpus is a sterpus. Polly is not hot.
+# Answer:
+Polly is a yumpus. Each yumpus is a sterpus. Polly is a sterpus. Sterpuses are not hot. Polly is not hot.
+####
+# Context:
+{{context}}
+# Question:
+{{question}}

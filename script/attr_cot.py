@@ -32,27 +32,25 @@ if __name__ == '__main__':
     # num = args.cand_num
     
     dataloader = DataLoader(dataset=dataset, n_samples=n_samples)
-    data = dataloader.load_data(method='attr_cot', n_examples=n_examples)
-    path_file = f'../result/{dataset}/{model_name}/{method}_{proxy}_pans_paths_e{n_examples}_s{n_samples}.json'
-
-    if not os.path.exists(path_file):
-        if method == 'direct':
-            path_file = f'../result/{dataset}/{model_name}/input_pans_paths_e{n_examples}_s{n_samples}_direct.json'
-        else:
-            path_file = f'../result/{dataset}/{model_name}/input_pans_paths_e{n_examples}_s{n_samples}.json'
+    data = dataloader.load_data(method='cot', n_examples=n_examples)
     
-    with open(path_file, 'r') as f:
-        path_data = json.load(f)
+    pans_path_file = f'../result/{dataset}/{model_name}/{method}_{proxy}_pans_paths_e{n_examples}_s{n_samples}.json'
+
+    # if not os.path.exists(path_file):
+    #     if method == 'direct':
+    #         path_file = f'../result/{dataset}/{model_name}/input_pans_paths_e{n_examples}_s{n_samples}_direct.json'
+    #     else:
+    #         path_file = f'../result/{dataset}/{model_name}/input_pans_paths_e{n_examples}_s{n_samples}.json'
+    
+    with open(pans_path_file, 'r') as f:
+        pans_path_data = json.load(f)
         f.close()
+
     path_dic = {}
-    for item in path_data:
-        # if num > len(item['path'][-1]['inp_attr']):
-        #     attrs = item['path'][-1]['inp_attr']
-        # else:
+    for item in pans_path_data:
         attrs = item['path'][-1]['inp_attr'][:3]
-        attr_sents = [x['inp'] for x in attrs]
-        # attr_sent = '. '.join(attr_sents)
-        path_dic[item['id']] = attr_sents
+        sents = [x['inp'] for x in attrs]
+        path_dic[item['id']] = sents
 
     if model_name.startswith('gpt'):
         new_data = []
@@ -72,7 +70,7 @@ if __name__ == '__main__':
         model_wrapper = ModelWrapper(model_name)
         model = model_wrapper.model
         tokenizer = model_wrapper.tokenizer
-        max_new_tokens = 500
+        max_new_tokens = 200
         split_token = '####'
         result = []
         correct = 0
@@ -83,11 +81,16 @@ if __name__ == '__main__':
                 continue
             hints = path_dic[id]
             for hint in hints:
-                input = item['question'] + f"\n# Hint:\n\nYou should focus on: {hint}\n# Reasoning:\n"
+            # for sent in sents:
+                # if sent in cot:
+                    # continue
+                # input = item['question'] + sent
+                input = item['question'] + f"\n# Hint:\nYou should focus on: {hint}.\n# Reasoning:\n"
                 inputs = tokenizer(input, return_tensors="pt")
                 input_ids = inputs["input_ids"].to(model_wrapper.device)  
                 outputs = model.generate(input_ids, max_new_tokens=max_new_tokens)
                 response = tokenizer.decode(outputs[0][len(input_ids[0]):], skip_special_tokens=True).split(split_token)[0]
+                # response = sent + response
                 answer = extract_answer(dataset, response)
                 cor_flag = False
                 if answer == item['answer']:
@@ -98,6 +101,7 @@ if __name__ == '__main__':
                 else:
                     reason = None 
                 msg = {'id':item['id'], 'question':item['raw_question'], 'hint':hint, 'response':response, 'answer':answer, 'reason':reason, 'label':item['answer'], 'cor_flag':cor_flag}
+                # msg = {'id':item['id'], 'question':item['raw_question'], 'response':response, 'answer':answer, 'reason':reason, 'label':item['answer'], 'cor_flag':cor_flag}
                 result.append(msg)
                 cnt += 1
         result.append({'acc': correct / n_samples})

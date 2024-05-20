@@ -11,6 +11,7 @@ parser.add_argument('--model', type=str, default='Llama2_13b')
 parser.add_argument('--n_samples', type=int, default=100)
 parser.add_argument('--n_examples', type=int, default=3)
 parser.add_argument('--dataset', type=str, default='proofwriter_d1')
+parser.add_argument('--target', type=str, default='pans')
 args = parser.parse_args()
 set_seed(17)
 
@@ -18,8 +19,9 @@ model_name = args.model
 n_samples = args.n_samples
 n_examples = args.n_examples
 dataset = args.dataset 
+target = args.target
 
-path_file = f'../result/{dataset}/{model_name}/cot_{model_name}_pans_paths_e3_s100.json'
+path_file = f'../result/{dataset}/{model_name}/cot_{model_name}_{target}_paths_e3_s100.json'
 data_file = f'../result/{dataset}/{model_name}/cot_e3_s100.json'
 
 with open(path_file, 'r') as f:
@@ -36,7 +38,10 @@ for num in range(1, 11):
     path_dic = {}
     rand_path_dic = {}
     for item in path_data:
-        inp_attr = item['path'][-1]['inp_attr']
+        if target == 'pcot':
+            inp_attr = item['path'][-1]['inp_attr']
+        else:
+            inp_attr = item['path'][-1]['inp_attr']
         attr_sent = [x['inp'].strip('.').strip() for x in inp_attr[:num]]
         if len(inp_attr) < num:
             k = len(inp_attr)
@@ -82,5 +87,5 @@ for num in range(1, 11):
 data = {'cot_flag':cot_flags, 'nums':nums, 'score':scores}
 data = DataFrame(data)
 names = ['nums', 'score', 'cot_flag']
-path = f'../result/{dataset}/{model_name}/hidden_overlap_line_fig.pdf'
+path = f'../result/{dataset}/{model_name}/{target}_overlap_line_fig.pdf'
 draw_line(data, path, names)

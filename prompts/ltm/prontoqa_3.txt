@@ -5,7 +5,8 @@ Gorpuses are cold. Dumpuses are not blue. Every lempus is a gorpus. Vumpuses are
 # Question:
 True or false: Fae is bright.
 # Reasoning:
-Fae is a vumpus. Each vumpus is not bright. Fae is not bright.
+Q1: True or false: Fae is bright.
+A1: Fae is a vumpus. Each vumpus is not bright. Fae is not bright.
 # Answer:
 The answer is: False.
 ####
@@ -14,7 +15,12 @@ Each rompus is a tumpus. Each numpus is rainy. Each jompus is slow. Tumpuses are
 # Question:
 True or false: Polly is not rainy.
 # Reasoning:
-Polly is a rompus. Every rompus is a vumpus. Polly is a vumpus. Vumpuses are numpuses. Polly is a numpus. Each numpus is rainy. Polly is rainy.
+Q1: True or false: Polly is a vumpus.
+A1: Polly is a rompus. Every rompus is a vumpus. Polly is a vumpus.
+Q2: True or false: Polly is a numpus.
+A2: Polly is a vumpus. Vumpuses are numpuses. Polly is a numpus.
+Q3: True or false: Polly is not rainy.
+A3: Polly is a numpus. Each numpus is rainy. Polly is rainy.
 # Answer:
 The answer is: False.
 ####
@@ -23,7 +29,14 @@ Every shumpus is a dumpus. Each dumpus is not spicy. Every rompus is a grimpus. 
 # Question:
 True or false: Rex is nervous.
 # Reasoning:
-Rex is a tumpus. Tumpuses are wumpuses. Rex is a wumpus. Wumpuses are rompuses. Rex is a rompus. Rompuses are shumpuses. Rex is a shumpus. Shumpuses are nervous. Rex is nervous.
+Q1: True or false: Rex is a wumpus.
+A1: Rex is a tumpus. Tumpuses are wumpuses. Rex is a wumpus.
+Q2: True or false: Rex is a rompus.
+A2: Rex is a wumpus. Wumpuses are rompuses. Rex is a rompus.
+Q3: True or false: Rex is a shumpus.
+A3: Rex is a rompus. Rompuses are shumpuses. Rex is a shumpus.
+Q3: True or false: Rex is nervous.
+A3: Rex is a shumpus. Shumpuses are nervous. Rex is nervous.
 # Answer:
 The answer is: True.
 ####
