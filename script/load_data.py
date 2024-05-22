@@ -165,6 +165,7 @@ class DataLoader(object):
     
     def reformat_question(self, item, method, n_examples):
         prompt = load_prompt(self.dataset, method, n_examples)
+        item['question'] = item['question_target']
         question = format_prompt(prompt, item)
         return question
     

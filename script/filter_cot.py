@@ -44,54 +44,45 @@ if nli_check:
     check_tokenizer = AutoTokenizer.from_pretrained(deberta_path)
 
 
-def check_paths(dataset):
+def check_pcot_paths(dataset):
     def extract_obj(sent):
         pattern = r'\b(\w+)\s+(is|are)\b'
         matches = re.findall(pattern, sent)
         return matches[0][0] 
 
     pcot_path_file = f'../result/{dataset}/{model_name}/{method}_{proxy}_pcot_diff_paths_e{n_examples}_s{n_samples}.json'
-    cot_path_file = f'../result/{dataset}/{model_name}/{method}_{proxy}_pcot_paths_e{n_examples}_s{n_samples}.json'
     with open(pcot_path_file, 'r') as f:
         pcot_path_data = json.load(f)
         f.close()
-    with open(cot_path_file, 'r') as f:
-        cot_path_data = json.load(f)
-        f.close()
 
-    scores_dic = {}
+    pcot_scores_dic = {}
     for i in range(len(pcot_path_data)):
-        pcot_item = pcot_path_data[i]
-        cot_item = cot_path_data[i]
-        if dataset.startswith('prontoqa'):   
-            name = extract_obj(cot_item['path'][0]['ref'])
-        else:
-            name = "None"
-        scores = []
-        extra_score = 0
-        for j in range(len(pcot_item['path'])):
-            cot_path = cot_item['path'][j]
+        pcot_item = pcot_path_data[i]  
+        name = extract_obj(pcot_item['path'][0]['ref'])
+        pcot_scores = []
+        for j in range(len(pcot_item['path'])-1):
             pcot_path = pcot_item['path'][j]
-            if j != 0 and name in cot_path['ref']:
-                # extra_score = 0.01
-                continue
-                # last_ref = cot_item['path'][j-1]
-                
-                # score = cot_path['inp_attr'][0]['attr']
+            if j != 0 and name in pcot_path['ref']:
+                pcot_score = 0
             else:
-                score = pcot_path['diff_inp_attr'][0][1]
-            scores.append(score)
-        if scores:
-            score = np.mean(np.array(scores)) + extra_score
+                s = pcot_path['diff_inp_attr']
+                if s: 
+                    pcot_score = np.mean(np.array([x[1] for x in s[1:2]]))
+                else:
+                    pcot_score = 0
+
+            pcot_scores.append(pcot_score)
+        if pcot_scores:
+            pcot_score = np.mean(np.array(pcot_scores))
         else:
-            score = 0
-        id = cot_item['id']
-        if id in scores_dic.keys():
-            scores_dic[id].append(score)
+            pcot_score = 0    
+        
+        id = pcot_item['id']
+        if id in pcot_scores_dic.keys():
+            pcot_scores_dic[id].append(pcot_score)
         else:
-            scores_dic[id] = [score]
-     
-    return scores_dic
+            pcot_scores_dic[id] = [pcot_score]
+    return pcot_scores_dic
 
 def check_target_paths(target):
     scores = {}
@@ -116,7 +107,10 @@ def check_target_paths(target):
             score = []
             
             for tup in item['path'][:-1]:
-                inp_attr = tup['diff_inp_attr'][0][1]
+                if tup['diff_inp_attr']:
+                    inp_attr = tup['diff_inp_attr'][0][1]
+                else:
+                    inp_attr = 0
                 score.append(inp_attr)
             if score:
                 score = np.array(score).mean()
@@ -129,7 +123,7 @@ def check_target_paths(target):
             scores[id] = [score]
     return scores
  
-def check_nli(question, statement, dataset):
+def check_nli(question, statement, dataset, ):
     input = check_tokenizer(question, statement, return_tensors="pt")
     output = check_model(input["input_ids"].to('cuda')) 
     prediction = torch.softmax(output["logits"][0], -1)
@@ -152,8 +146,11 @@ correct = 0
 if cans_check:
     cans_scores = check_target_paths(target='cans')
 if pcot_check:
-    # pcot_scores = check_target_paths(target='pcot')
-    pcot_scores = check_paths(dataset)
+    if dataset.startswith('pronto'):
+        pcot_scores = check_pcot_paths(dataset)
+    else:
+        pcot_scores = check_target_paths(target='pcot')
+    # 
 if cot_check:
     cot_scores = check_target_paths(target='cot')
 
@@ -190,7 +187,6 @@ for id, items in tqdm(data_dic.items()):
     if pcot_check and id in pcot_scores.keys():
         pcot_score = pcot_scores[id] 
         for i in range(item_num):
-            print(answers[i])
             if answers[i] not in ['True', 'False', 'A', 'B', 'C']:
                 pcot_score.insert(i, 0)
     else:
@@ -219,8 +215,6 @@ for id, items in tqdm(data_dic.items()):
             pred = check_nli(question=question_stem, statement=last_step, dataset=dataset)
         else:
             pred = answers[i]
-        print(i)
-        print(pcot_score)
         score = cans_score[i] + pcot_score[i] + cot_score[i]
         if pred:
             scores.append(score)
@@ -280,6 +274,8 @@ if pcot_check:
     result_path += f'_pcot'
 if cot_check:
     result_path += f'_cot'
+if method == 'attr_random_cot':
+    result_path += f'_random'
 result_path +='.json'
    
 with open(result_path, 'w') as f:

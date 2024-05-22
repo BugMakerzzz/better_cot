@@ -148,15 +148,12 @@ def main():
     if method == 'gold_cot':
         result_path = f'../result/{dataset}/{model_name}/cot_e{n_examples}_s{n_samples}.json'
     with open(result_path, 'r') as f:
-        if method == 'attr_cot':
-            results = json.load(f)[:-1]
-        else:
-            results = json.load(f)[:-1][:n_samples]
+        results = json.load(f)[:-1]
     
     
     model = ModelWrapper(proxy)
     dataloader = DataLoader(dataset=dataset, n_samples=500)
-    if method in ['attr_cot', 'gold_cot']:
+    if method in ['attr_cot', 'gold_cot', 'attr_random_cot']:
         data = dataloader.load_data(method='cot', n_examples=3)
     elif method == 'inter_cot':
         data = results

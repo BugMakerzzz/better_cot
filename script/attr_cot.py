@@ -1,13 +1,14 @@
 import argparse
 import os
 import json
+import random
 from model import ModelWrapper
 from load_data import DataLoader, extract_answer
 from transformers import set_seed
 from tqdm import tqdm
 from gpt_reason import gpt_reason
-
     
+random.seed(17)    
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -18,6 +19,7 @@ if __name__ == '__main__':
     parser.add_argument('--proxy', type=str, default='Llama2_13b')
     parser.add_argument('--method', type=str, default='cot')
     parser.add_argument('--target', type=str, default='pans')
+    parser.add_argument('--random', action='store_true')
     # parser.add_argument('--cand_num', type=int, default=3)
 
     args = parser.parse_args()
@@ -29,6 +31,7 @@ if __name__ == '__main__':
     dataset = args.dataset 
     proxy = args.proxy
     method = args.method
+    rand = args.random
     # num = args.cand_num
     
     dataloader = DataLoader(dataset=dataset, n_samples=n_samples)
@@ -48,7 +51,10 @@ if __name__ == '__main__':
 
     path_dic = {}
     for item in pans_path_data:
-        attrs = item['path'][-1]['inp_attr'][:3]
+        if rand:
+            attrs = random.sample(item['path'][-1]['inp_attr'], 3)
+        else:
+            attrs = item['path'][-1]['inp_attr'][:3]
         sents = [x['inp'] for x in attrs]
         path_dic[item['id']] = sents
 
@@ -108,7 +114,10 @@ if __name__ == '__main__':
     result_dir = f'../result/{dataset}/{model_name}/'
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
-    result_path = os.path.join(result_dir, f'attr_cot_e{n_examples}_s{n_samples}.json')
+    if rand:
+        result_path = os.path.join(result_dir, f'attr_random_cot_e{n_examples}_s{n_samples}.json')
+    else:
+        result_path = os.path.join(result_dir, f'attr_cot_e{n_examples}_s{n_samples}.json')
     with open(result_path, 'w') as f:
         json.dump(result, f, indent=4)
         f.close()

@@ -86,8 +86,8 @@ def draw_heat(x_labels, y_labels, scores, path):
 def draw_line(data, path, names):
     
     sns.set_theme(style="whitegrid",font='Times New Roman')
-    # custom_colors = ['#7976A2', '#4A5E65', '#E29957', '#86B5A1', '#B95A58', '#4292C6']
-    custom_colors = ['#7976A2', '#4A5E65', '#E29957', '#86B5A1', '#B95A58', '#4292C6'][::-1]
+    custom_colors =  ['#7976A2', '#4A5E65', '#E29957', '#86B5A1', '#B95A58', '#4292C6']
+    custom_colors =  ['#7976A2', '#4A5E65', '#E29957', '#86B5A1', '#B95A58', '#4292C6'][::-1]
     ax = sns.lineplot(x = names[0], 
                       y = names[1], 
                       hue = names[2],
@@ -99,7 +99,7 @@ def draw_line(data, path, names):
     # ax.lines[2].set_linestyle("--")
     ax.set_xlabel(ax.get_xlabel(), fontsize=22)  # X轴标签
     ax.set_ylabel(ax.get_ylabel(), fontsize=22)  # Y轴标签
-    ax.legend(fontsize='18', loc='upper left')  # 图例
+    ax.legend(fontsize='18', loc='upper left', fancybox=True, framealpha=0.5)  # 图例
 
     # 调整刻度文字大小
     ax.tick_params(axis='both', which='major', labelsize=20)
@@ -203,3 +203,26 @@ def get_bleu(results, name_dic):
         v = np.array(v).mean()
         bleu[k] = v
     return bleu
+
+def get_fr(results, name_dic):
+    generate_sents = []
+    ref_sents = []
+    for item in results[:-1]:
+        if not item['cor_flag']:
+            continue
+        if not item[name_dic['gen']]:
+            continue
+        cot = item[name_dic['gen']].split('\n# Answer:')[0]
+        generate_sents.append(cot)
+        if isinstance(item[name_dic['ref']], list):
+            f = 0
+            for ref in item[name_dic['ref']]:
+                rouge = cal_rouge(cot, ref, avg=False)
+                if rouge['f'] > f:
+                    reason = ref
+                    f = rouge['f']
+            ref_sents.append(reason)
+        else:
+            ref_sents.append(item[name_dic['ref']])
+    rouge = cal_rouge(generate_sents, ref_sents)
+    return rouge

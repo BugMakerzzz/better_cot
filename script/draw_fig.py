@@ -47,10 +47,11 @@ def plt_score():
 def plot_step_line():
     # dataset_ls = ['gsm8k', 'aqua', 'proofwriter', 'folio', 'wino', 'siqa']
     # target_ls = ['qcot', 'cot', 'cans', 'qans']
-    dataset_ls = ['aqua','gsm8k','siqa']
-    target_ls = ['cans']
+    dataset_ls = ['aqua', 'gsm8k', 'siqa', 'wino', 'proofwriter', 'prontoqa']
+    # dataset_ls = ['siqa', 'wino', 'proofwriter', 'prontoqa']
+    target_ls = ['pcot']
     
-    name_map = {'aqua':'aqua', 'gsm8k':'gsm8k', 'wino':'winogrande', 'siqa':'socialiqa', 'proofwriter':'proofwriter', 'prontoqa':'prontoqa'}
+    name_map = {'aqua':'AQA.', 'gsm8k':'GSM.', 'wino':'WG.', 'siqa':'SIQA.', 'proofwriter':'PW.', 'prontoqa':'PQA.'}
     
     for target in target_ls:
         datasets = []
@@ -144,5 +145,5 @@ def plot_type_line():
 #                 scores[:-1],
 #                 path=os.path.join(dir_path, f"{id}_{score}.pdf"))
 
-# plot_step_line()
-plot_type_line()
+plot_step_line()
+# plot_type_line()

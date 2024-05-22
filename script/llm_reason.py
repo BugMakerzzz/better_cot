@@ -24,6 +24,13 @@ method = args.method
 
 dataloader = DataLoader(dataset=dataset, n_samples=n_samples)
 data = dataloader.load_data(method=method, n_examples=n_examples)
+if method == 'sr':
+    cot_path = f"../result/{dataset}/{model_name}/cot_e{n_examples}_s{n_samples}.json"
+    with open(cot_path, 'r') as f:
+        cot_data = json.load(f)[:-1]
+        f.close()
+    cot_dic = {item['id']:item['response'].split('\n# Answer:')[0].strip() for item in cot_data}
+
 
 if model_name.startswith('gpt'):
     result = gpt_reason(data, model_name, method, dataset)
@@ -81,7 +88,27 @@ else:
                 cor_flag = True
                 correct += 1       
         elif method == 'sr':
-            
+            cot = cot_dic[item['id']]
+            del input_ids
+            input_text = item['question'].rstrip() + f"\n{cot}\n# Answer:\n"
+            inputs = tokenizer(input_text, return_tensors="pt")
+            input_ids = inputs["input_ids"].to(model_wrapper.device)
+            outputs = model.generate(input_ids, max_new_tokens=max_new_tokens)
+            response = tokenizer.decode(outputs[0][len(input_ids[0]):], skip_special_tokens=True).split(split_token)[0].rstrip()
+            item['reasoning'] = cot
+            item['feedback'] = response
+            question = dataloader.reformat_question(item, method='sr_refine',n_examples=3)
+            inputs = tokenizer(question, return_tensors="pt")
+            input_ids = inputs["input_ids"].to(model_wrapper.device)
+            outputs = model.generate(input_ids, max_new_tokens=max_new_tokens)
+            response = tokenizer.decode(outputs[0][len(input_ids[0]):], skip_special_tokens=True).split(split_token)[0]
+            answer = extract_answer(dataset, response)
+            response = f"Old reasoning: {cot}\nFeedback:{item['feedback']}\n" + response
+            cor_flag = False
+            if answer == item['answer']:
+                cor_flag = True
+                correct += 1
+
         else:
             if model_name.startswith('Llama3'):
                 stop_token = "<|eot_id|>"

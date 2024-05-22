@@ -73,32 +73,32 @@ for num in range(1, 11):
         attr_sent = path_dic[item['id']]
         gold_cot = item['reason']
         cot = item['response']
-        if item['cot_flag'] in [0,1]:
-            continue
+        
         score = cal_overlap(cot, gold_cot, attr_sent)
+        if item['cor_flag'] and item['cot_flag'] in [2,3]:
+            cot_flags.append('unfaithful')   
+            nums.append(num)
+            scores.append(score)
         cot_flags.append('average')
         nums.append(num)
         scores.append(score)
         
-        if item['cor_flag']:
-            cot_flags.append('unfaithful')   
-            nums.append(num)
-            scores.append(score)
         # cot_flags.append('golden')   
         # nums.append(num)
         # score = cal_overlap("", cot, attr_sent)
         # scores.append(score)
-    # for item in data:
-    #     if item['id'] not in rand_path_dic.keys():
-    #         continue
-    #     rand_sent = rand_path_dic[item['id']]
-    #     gold_cot = item['reason']
-    #     cot = item['response']
-    #     rand_score = cal_overlap(cot, gold_cot, rand_sent)
-    #     cot_flags.append('random')
-    #     nums.append(num)
-    #     scores.append(rand_score)
-        # score = correct / len(gold_cot.split('.'))
+    for item in data:
+        if item['id'] not in rand_path_dic.keys():
+            continue
+        if item['cot_flag'] in [0,1]:
+            continue
+        rand_sent = rand_path_dic[item['id']]
+        gold_cot = item['reason']
+        cot = item['response']
+        rand_score = cal_overlap(cot, gold_cot, rand_sent)
+        cot_flags.append('random')
+        nums.append(num)
+        scores.append(rand_score)
 
 data = {'cot_flag':cot_flags, 'top k':nums, 'hit count':scores}
 data = DataFrame(data)
