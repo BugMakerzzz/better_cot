@@ -3,16 +3,15 @@ import numpy as np
 import argparse
 import os
 from transformers import AutoTokenizer
-from config import *
+from utils.config import *
+from utils.model import ModelWrapper
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='Llama2_13b')
-parser.add_argument('--n_samples', type=int, default=100)
+parser.add_argument('--model', type=str, default='Llama3_1_8b_chat')
+parser.add_argument('--n_samples', type=int, default=200)
 parser.add_argument('--n_examples', type=int, default=3)
 parser.add_argument('--dataset', type=str, default='proofwriter_d1')
 parser.add_argument('--target', type=str, default='cot')
-parser.add_argument('--proxy', type=str, default='Llama2_13b')
-parser.add_argument('--method', type=str, default='cot')
 
 args = parser.parse_args()
 
@@ -23,49 +22,31 @@ dataset = args.dataset
 target = args.target
 proxy = args.proxy
 method = args.method
+proxy = model_name
 
-score_path = f'../result/{dataset}/{model_name}/{method}_{proxy}_{target}_scores_e{n_examples}_s{n_samples}.json'
-if not os.path.exists(score_path):
-    if method == 'direct':
-        score_path = f'../result/{dataset}/{model_name}/input_{target}_scores_e{n_examples}_s{n_samples}_direct.json'
-    else:
-        score_path = f'../result/{dataset}/{model_name}/input_{target}_scores_e{n_examples}_s{n_samples}.json'
+score_path = f'../result/{dataset}/{model_name}/{target}_info_e{n_examples}_{n_samples}.json'
 
 with open(score_path, 'r') as f:
     score_data = json.load(f)
     f.close()
-
-def get_model_path(model_name):
-    if model_name.startswith('Llama'):
-        if '7b' in model_name:
-            if 'chat' in model_name:
-                path = llama2_7b_chat_path
-            else:
-                path = llama2_7b_path
-        else:
-            if 'chat' in model_name:
-                path = llama2_13b_chat_path
-            else:
-                path = llama2_13b_path
-    elif model_name.startswith('Mistral'):
-        path = mistral_7b_path
-    else:
-        path = None
-        pass 
-    return path
 
 def find_step_index(tokens, tokenizer):
     step_idx_dic = {}
     start = 0
     end = 0
     num = 0
+    ban_token_ls = ['?', '<0x0A>', '\".',] 
+    if dataset == 'wino':
+        ban_token_ls.extend(['▁but','▁because','_as', '▁,', ','])
     for i in range(len(tokens)):
         token = tokens[i]
         if token == '<0x0A>' and i == 0:
             start = 1
+        
         if i == len(tokens)-1 \
-            or token in ['?', '<0x0A>', '\".'] \
+            or token in ban_token_ls \
             or token == '.' and (not tokens[i-1].isdigit() or not tokens[i+1].isdigit()):
+        
             end = i
             if end - start > 1 or end == len(tokens) - 1:
                 if end == len(tokens) - 1 and start == 0:
@@ -74,18 +55,17 @@ def find_step_index(tokens, tokenizer):
                 step_idx_dic[start] = {'end':end, 'step':step, 'num':num}
                 num += 1
                 start = i + 1
-        
     return step_idx_dic
 
 
-tokenizer = AutoTokenizer.from_pretrained(get_model_path(proxy))
+tokenizer = ModelWrapper()
 
 results = []
-result_path = f'../result/{dataset}/{model_name}/{method}_{proxy}_{target}_paths_e{n_examples}_s{n_samples}.json'
+result_path = f'../result/{dataset}/{model_name}/{target}_path_e{n_examples}_{n_samples}.json'
 
 for item in score_data:
   
-    input_tokens = item['inp']
+    input_tokens = item['input']
     output_tokens = item['out']
     scores = np.array(item['scores'])
 

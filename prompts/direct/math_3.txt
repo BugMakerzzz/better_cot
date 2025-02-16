@@ -1,0 +1,19 @@
+Please act as a match teacher and solve the math problem step by step.
+####
+# Question:
+How many 3-letter words can we make from the letters A, B, C, and D, if we are allowed to repeat letters, and we must use the letter A at least once? (Here, a word is an arbitrary sequence of letters.)
+# Answer:
+The answer is: \\boxed{37}
+####
+# Answer:
+The answer is: \\boxed{105}
+####
+# Question:
+Find the $\\emph{positive}$ real number(s) $x$ such that $\\frac{1}{2}\\left( 3x^2-1\\right) = \\left( x^2-50x-10\\right)\\left( x^2+25x+5\\right)$.
+# Answer:
+The answer is: \\boxed{25 + 2\\sqrt{159}}
+####
+# Question:
+{{question}}
+# Answer:
+

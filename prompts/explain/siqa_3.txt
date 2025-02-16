@@ -1,0 +1,40 @@
+Please act as a commonsense teacher, directly answer the question and give the explanation.
+####
+# Question:
+Quinn wanted to help me clean my room up because it was so messy. What will Quinn want to do next?
+# Options:
+(A) Eat messy snacks
+(B) help out a friend
+(C) Pick up the dirty clothes
+# Answer:
+The answer is: C
+# Explanation:
+Quinn want to clean the room up. Picking up the dirty clothes is one way to clean the room. Thus, quinn will want to pick up the dirty clothes next.
+####
+# Question:
+Sydney had so much pent up emotion, they burst into tears at work. How would Sydney feel afterwards?
+# Options:
+(A) affected
+(B) like they released their tension
+(C) worse
+# Answer:
+The answer is: B
+# Explanation:
+Crying is often a way to release tension. Sydney burst into tears at work. Thus, she would release the tension.
+####
+# Question:
+Their cat kept trying to escape out of the window, so Jan placed an obstacle in the way. How would Jan feel afterwards?
+# Options:
+(A) scared of losing the cat
+(B) normal
+(C) relieved for fixing the problem 
+# Answer:
+The answer is: C
+# Explanation:
+The cat try to escape so Jan need to stop it to avoid losing the cat. Jan place an obstacle in the way so the cat can not escape. The problem is been solved. Thus, Jan will fell relieved for fixing the problem.
+####
+# Question:
+{{question}}
+# Options:
+{{options}}
+# Answer:

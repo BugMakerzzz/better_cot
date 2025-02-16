@@ -1,4 +1,4 @@
-Please act as a symbolic teacher and reason step by step to solve the symbolic reasoning problem Given a context and a question, explain your reasoning process and give the answer.
+Please act as a symbolic teacher. Given a context and a question, give the answer to the question.  You should not generate any explanation or reason and must directly give the final answer.
 ####
 # Context:
 The last letter of \"Hughes\" is e. The last letter of \"Penelope\" is P. The last letter of \"Hughes\" is g. The last letter of \"Hughes\" is h. The last letter of \"Penelope\" is l. The last letter of \"Penelope\" is p. The last letter of \"Hughes\" is u. The last letter of \"Penelope\" is n. The last letter of \"Hughes\" is s. The last letter of \"Hughes\" is H. The last letter of \"Penelope\" is e. The last letter of \"Penelope\" is o.

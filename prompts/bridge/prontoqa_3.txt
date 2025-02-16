@@ -1,0 +1,42 @@
+Please act as a logical teacher and reason step by step to solve the logical reasoning problem.
+####
+# Context:
+Gorpuses are cold. Dumpuses are not blue. Every lempus is a gorpus. Vumpuses are jompuses. Each jompus is not luminous. Every lempus is a vumpus. Each vumpus is a wumpus. Lempuses are not muffled. Each dumpus is a numpus. Each vumpus is not bright. Fae is a dumpus. Fae is a vumpus.
+# Question:
+True or false: Fae is bright.
+# Hint:
+You should focus on: Each vumpus is not bright.
+# Reasoning:
+Fae is a vumpus. Each vumpus is not bright. Fae is not bright.
+# Answer:
+The answer is: False.
+####
+# Context:
+Each rompus is a tumpus. Each numpus is rainy. Each jompus is slow. Tumpuses are large. Jompuses are shumpuses. Rompuses are spicy. Grimpuses are not hot. Numpuses are sterpuses. Every vumpus is not feisty. Vumpuses are numpuses. Sterpuses are dull. Vumpuses are grimpuses. Numpuses are yumpuses. Every rompus is a vumpus. Polly is a rompus. Polly is a jompus.
+# Question:
+True or false: Polly is not rainy.
+# Hint:
+You should focus on: Vumpuses are numpuses.
+# Reasoning:
+Polly is a rompus. Every rompus is a vumpus. Polly is a vumpus. Vumpuses are numpuses. Polly is a numpus. Each numpus is rainy. Polly is rainy.
+# Answer:
+The answer is: False.
+####
+# Context:
+Every shumpus is a dumpus. Each dumpus is not spicy. Every rompus is a grimpus. Tumpuses are jompuses. Every gorpus is red. Rompuses are opaque. Wumpuses are muffled. Shumpuses are nervous. Each wumpus is a lorpus. Tumpuses are wumpuses. Every dumpus is an impus. Tumpuses are not aggressive. Shumpuses are gorpuses. Jompuses are not cold. Every dumpus is a yumpus. Brimpuses are sterpuses. Yumpuses are not dull. Lorpuses are fruity. Rompuses are shumpuses. Each brimpus is moderate. Grimpuses are windy. Wumpuses are rompuses. Rex is a tumpus. Rex is a brimpus.
+# Question:
+True or false: Rex is nervous.
+# Hint:
+You should focus on: Rex is a tumpus.
+# Reasoning:
+Rex is a tumpus. Tumpuses are wumpuses. Rex is a wumpus. Wumpuses are rompuses. Rex is a rompus. Rompuses are shumpuses. Rex is a shumpus. Shumpuses are nervous. Rex is nervous.
+# Answer:
+The answer is: True.
+####
+# Context:
+{{context}}
+# Question:
+{{question}}
+# Hint:
+{hint}
+# Reasoning:

@@ -1,0 +1,43 @@
+Please act as a logical teacher and reason step by step to solve the logical reasoning problem.
+####
+# Context:
+Each lorpus is not transparent. Every gorpus is slow. Sterpuses are gorpuses. Every lempus is angry. Every rompus is floral. Lempuses are lorpuses. Jompuses are brimpuses. Each wumpus is a tumpus. Each numpus is overcast. Gorpuses are yumpuses. Brimpuses are sterpuses. Every sterpus is a zumpus. Every wumpus is loud. Zumpuses are nervous. Each brimpus is not bright. Each gorpus is a dumpus. Jompuses are temperate. Each yumpus is red. Lempuses are jompuses. Jompuses are rompuses. Each brimpus is a numpus. Sterpuses are small. Sally is a jompus. Sally is a wumpus.
+# Question:
+True or false: Sally is bright.
+# Reasoning:
+Q1: True or false: Sally is a brimpus.
+A1: Sally is a jompus. Jompuses are brimpuses. Sally is a brimpus.
+Q2: True or false: Sally is bright.
+A2: Sally is a brimpus. Each brimpus is not bright. Sally is not bright.
+# Answer:
+The answer is: False.
+####
+# Context:
+Lempuses are tumpuses. Every sterpus is a grimpus. Each sterpus is an impus. Jompuses are sterpuses. Every zumpus is dull. Each sterpus is not muffled. Jompuses are not slow. Each grimpus is a yumpus. Every dumpus is rainy. Grimpuses are dumpuses. Jompuses are zumpuses. Each lempus is transparent. Every grimpus is not cold. Each impus is small. Wren is a jompus. Wren is a lempus.
+# Question:
+True or false: Wren is not muffled.
+# Reasoning:
+Q1: True or false: Wren is a sterpus.
+A1: Wren is a jompus. Jompuses are sterpuses. Wren is a sterpus.
+Q2: True or false: Wren is not muffled.
+A2: Wren is a sterpus. Each sterpus is not muffled. Wren is not muffled.
+# Answer:
+The answer is: True.
+####
+# Context:
+Each yumpus is a sterpus. Yumpuses are not earthy. Every dumpus is not sour. Lempuses are not overcast. Every impus is a grimpus. Sterpuses are lorpuses. Sterpuses are not hot. Every yumpus is a dumpus. Impuses are happy. Every sterpus is a lempus. Polly is a yumpus. Polly is an impus.
+# Question:
+True or false: Polly is not hot.
+# Reasoning:
+Q1: True or false: Polly is a sterpus.
+A1: Polly is a yumpus. Each yumpus is a sterpus. Polly is a sterpus.
+Q2: True or false: Polly is not hot.
+A2: Polly is a sterpus. Sterpuses are not hot. Polly is not hot.
+# Answer:
+The answer is: True.
+####
+# Context:
+{{context}}
+# Question:
+{{question}}
+# Reasoning:

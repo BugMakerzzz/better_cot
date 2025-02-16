@@ -1,0 +1,21 @@
+Please act as a match teacher and solve the math problem. You should not generate any explanation or reason and must directly give the final answer.
+####
+# Question:
+Mr. Ruther sold 3/5 of his land and had 12.8 hectares left. How much land did he have at first?
+# Answer:
+The answer is: 32.
+####
+# Question:
+The Doubtfire sisters are driving home with 7 kittens adopted from the local animal shelter when their mother calls to inform them that their two house cats have just had kittens. She says that Patchy, the first cat, has had thrice the number of adopted kittens, while Trixie, the other cat, has had 12. How many kittens does the Doubtfire family now have?
+# Answer:
+The answer is: 40.
+####
+# Question:
+After transferring to a new school, Amy made 20 more friends than Lily. If Lily made 50 friends, how many friends do Lily and Amy have together?
+# Answer:
+The answer is: 120.
+####
+# Question:
+{{question}}
+# Answer:
+

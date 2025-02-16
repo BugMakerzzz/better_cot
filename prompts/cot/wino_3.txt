@@ -8,7 +8,7 @@ Donald was very grounded but Michael often got lost in their daydreams. _ was ve
 # Reasoning:
 A person is grounded means he works hard and does not like to fantasize. A person often gets lost in his daydreams, he is seen as unrealistic and egocentric. A person is capricious all the time means he does everything only according to his own ideas. Since Michael often gets lost in their daydreams but Donald does not, Michael is seen as very capricious all the time.
 # Answer:
-The correct option is: B
+The answer is: B
 ####
 # Question:
 The test was hard for Samuel but a breeze for Randy , since _ had failed to study for it.
@@ -18,7 +18,7 @@ The test was hard for Samuel but a breeze for Randy , since _ had failed to stud
 # Reasoning:
 To pass a test, a person need to study for it. If a person feel the test like a breeze, it means the test is easy for him. A person feels the test easy, because he studies hard for it. Since we know that Samuel feel the test very hard, she may fail to study for it.
 # Answer:
-The correct option is: A
+The answer is: A
 ####
 # Question:
 Jeffrey was sick with the stomach flu and not hungry, but Christopher was starving. _ ordered food.
@@ -28,7 +28,7 @@ Jeffrey was sick with the stomach flu and not hungry, but Christopher was starvi
 # Reasoning:
 Stomach flu is a viral infection in the digestive system. A person is starve so that he need to eat something next. A person is not hungry means he does not want to eat something. Ordering food means to buy food online. A person may eat food after ordering it. Since Christopher was starving and Jeffery was sick and not hungry, Christopher tended to order food.
 # Answer:
-The correct option is: B
+The answer is: B
 ####
 # Question:
 {{question}}

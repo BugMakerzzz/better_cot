@@ -33,4 +33,3 @@ The answer is 180.
 # Question:
 {{question}}
 # Reasoning:
-Let's think step by step.

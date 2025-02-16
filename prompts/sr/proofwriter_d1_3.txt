@@ -1,0 +1,45 @@
+Please act as a logical teacher and reason step by step to solve the logical reasoning problem. Given a context and a rmat "\nThe correct option is: A/B/C".
+####
+# Context:
+Anne is not blue. Anne is cold. Anne is round. Fiona is blue. Fiona is furry. Gary is furry. Gary is quiet. Gary is smart. Harry is cold. Harry is quiet. If something is furry and not blue then it is nice. If Anne is furry then Anne is nice. Smart, furry things are round.
+# Question:
+Based on the above information, is the following statement true, false, or unknown? Gary is round.
+# Options:
+A) True
+B) False
+# Reasoning:
+Anne is round. So Gary is round.
+# Answer:
+The reasoning is wrong, since there is no statement in the context supporting the reasoning from 'Anne is round' to 'Gary is round'.
+####
+# Context:
+The bear chases the rabbit. The bear sees the lion. The lion chases the rabbit. The lion chases the squirrel. The lion is green. The lion is young. The lion likes the bear. The lion likes the rabbit. The lion sees the squirrel. The rabbit is cold. The rabbit is young. The rabbit likes the squirrel. The rabbit sees the squirrel. The squirrel chases the bear. The squirrel is blue. The squirrel is nice. If someone is blue then they like the bear.
+# Question:
+Based on the above information, is the following statement true, false, or unknown? The squirrel does not like the bear.
+# Options:
+A) True
+B) False
+# Reasoning:
+The squirrel is blue. If someone is blue then they like the bear. So The squirrel likes the bear.
+# Answer:
+The reasoning is correct.
+####
+# Context:
+Charlie is not smart. Gary is round. Harry is smart. If something is smart then it is blue. Young things are not blue. If Harry is not smart then Harry is not cold. If something is round and cold then it is nice. If something is big and not blue then it is nice. Nice things are cold.
+# Question:
+Based on the above information, is the following statement true, false, or unknown? Harry is not blue.
+# Options:
+A) True
+B) False
+# Reasoning:
+Harry is young. Young things are not blue. So Harry is not blue.
+# Answer:
+The reasoning is wrong, since the statement 'Harry is young' not in the context.
+####
+# Context:
+{{context}}
+# Question:
+{{question}}
+# Options:
+{{options}}
+# Reasoning:

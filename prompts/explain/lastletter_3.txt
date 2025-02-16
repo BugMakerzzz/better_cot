@@ -1,0 +1,34 @@
+Please act as a symbolic teacher, directly answer the question and give the explanation.
+####
+# Context:
+The last letter of \"Hughes\" is e. The last letter of \"Penelope\" is P. The last letter of \"Hughes\" is g. The last letter of \"Hughes\" is h. The last letter of \"Penelope\" is l. The last letter of \"Penelope\" is p. The last letter of \"Hughes\" is u. The last letter of \"Penelope\" is n. The last letter of \"Hughes\" is s. The last letter of \"Hughes\" is H. The last letter of \"Penelope\" is e. The last letter of \"Penelope\" is o.
+# Question:
+Take the last letters of the words in \"Penelope Hughes\" and concatenate them.
+# Answer:
+The answer is: es.
+# Explanation:
+The last letter of \"Penelope\" is e. The last letter of \"Hughes\" is s. Concatenating them is es.
+####
+# Context:
+The last letter of \"Adams\" is s. The last letter of \"Evelyn\" is E. The last letter of \"Adams\" is d. The last letter of \"Evelyn\" is e. The last letter of \"Adams\" is a. The last letter of \"Evelyn\" is l. The last letter of \"Adams\" is A. The last letter of \"Adams\" is m. The last letter of \"Evelyn\" is n. The last letter of \"Evelyn\" is y. The last letter of \"Evelyn\" is v.
+# Question:
+Take the last letters of the words in \"Evelyn Adams\" and concatenate them.
+# Answer:
+The answer is: ns.
+# Explanation:
+The last letter of \"Evelyn\" is n. The last letter of \"Adams\" is s. Concatenating them is ns.
+####
+# Context:
+The last letter of \"Pierce\" is P. The last letter of \"Pierce\" is c. The last letter of \"Pierce\" is i. The last letter of \"Sadie\" is e. The last letter of \"Sadie\" is i. The last letter of \"Sadie\" is a. The last letter of \"Sadie\" is S. The last letter of \"Sadie\" is d. The last letter of \"Pierce\" is e. The last letter of \"Pierce\" is r.
+# Question:
+Take the last letters of the words in \"Sadie Pierce\" and concatenate them.
+# Answer:
+The answer is: ee.
+# Explanation:
+The last letter of \"Sadie\" is e. The last letter of \"Pierce\" is e. Concatenating them is ee.
+####
+# Context:
+{{context}}
+# Question:
+{{question}}
+# Answer:

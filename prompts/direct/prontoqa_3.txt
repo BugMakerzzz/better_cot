@@ -1,0 +1,28 @@
+Please act as a logical teacher and solve the logical reasoning problem.  You should not generate any explanation or reason and must directly give the final answer.
+####
+# Context:
+Gorpuses are cold. Dumpuses are not blue. Every lempus is a gorpus. Vumpuses are jompuses. Each jompus is not luminous. Every lempus is a vumpus. Each vumpus is a wumpus. Lempuses are not muffled. Each dumpus is a numpus. Each vumpus is not bright. Fae is a dumpus. Fae is a vumpus.
+# Question:
+True or false: Fae is bright.
+# Answer:
+The answer is: False.
+####
+# Context:
+Each rompus is a tumpus. Each numpus is rainy. Each jompus is slow. Tumpuses are large. Jompuses are shumpuses. Rompuses are spicy. Grimpuses are not hot. Numpuses are sterpuses. Every vumpus is not feisty. Vumpuses are numpuses. Sterpuses are dull. Vumpuses are grimpuses. Numpuses are yumpuses. Every rompus is a vumpus. Polly is a rompus. Polly is a jompus.
+# Question:
+True or false: Polly is not rainy.
+# Answer:
+The answer is: False.
+####
+# Context:
+Every shumpus is a dumpus. Each dumpus is not spicy. Every rompus is a grimpus. Tumpuses are jompuses. Every gorpus is red. Rompuses are opaque. Wumpuses are muffled. Shumpuses are nervous. Each wumpus is a lorpus. Tumpuses are wumpuses. Every dumpus is an impus. Tumpuses are not aggressive. Shumpuses are gorpuses. Jompuses are not cold. Every dumpus is a yumpus. Brimpuses are sterpuses. Yumpuses are not dull. Lorpuses are fruity. Rompuses are shumpuses. Each brimpus is moderate. Grimpuses are windy. Wumpuses are rompuses. Rex is a tumpus. Rex is a brimpus.
+# Question:
+True or false: Rex is nervous.
+# Answer:
+The answer is: True.
+####
+# Context:
+{{context}}
+# Question:
+{{question}}
+# Answer:

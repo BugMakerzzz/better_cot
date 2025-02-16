@@ -1,93 +1,185 @@
-import argparse
-import json
-from load_data import DataLoader
+# from utils.load_data import load_json_data, write_json_data, extract_answer
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='Llama2_13b')
-parser.add_argument('--n_samples', type=int, default=100)
-parser.add_argument('--n_examples', type=int, default=3)
-parser.add_argument('--dataset', type=str, default='proofwriter_d1')
-parser.add_argument('--method', type=str, default='cot')
-args = parser.parse_args()
+# def is_equiv(str1, str2):
+#     if not str1 or not str2:
+#         return False
+#     return str1 and str2 and str1.lower() == str2.lower()
 
-model_name = args.model
-n_samples = args.n_samples
-n_examples = args.n_examples
-dataset = args.dataset 
-method = args.method
 
-path = f'../result/{dataset}/{model_name}/filter_cot_e3_s{n_samples}_nli_pcot.json'
-with open(path, 'r') as f:
-    data = json.load(f)[:-1]    
-    f.close()
-
-result_path = './human.json'
-results = []
-for item in data:
-    msg = {'question':item['question'], 'label':item['label'],'reason':item['reason'],'cot1':item['f_response'], 'ans1':item['f_answer'], 'cot2':item['response'][-1], 'ans2':item['answer'][-1]}
-    results.append(msg)
-with open(result_path, 'w') as f:
-    json.dump(results, f, indent=4)
-    f.close()
- 
-# dataloader = DataLoader(dataset=dataset, n_samples=1000)
-# data = dataloader.load_data(method=method, n_examples=n_examples)
-# reason_dic = {item['id']:item['reason'] for item in data}
-
-# path = f"../result/{dataset}/{model_name}/{method}_e{n_examples}_s{n_samples}.json"
-# with open(path, 'r') as f:
-#     result_data = json.load(f)
-#     f.close()
-# i = 0
-# for item in result_data[:-1]:
+# model = 'Mistral_7b_chat'
+# # datasets = ['prontoqa', 'proofwriter']
+# datasets = ['proofwriter','prontoqa', ]
+# for dataset in datasets:
+#     # print(dataset)
+#     sc_path = f'../result/{dataset}/{model}/sc10_e3_500.json'
+#     # direct_path = f'../result/{dataset}/Llama3_1_8b_chat/direct_e3_200.json'
     
-#     if 'reason' not in item.keys():
-#         i += 1
-#         item['reason'] = reason_dic[item['id']]
-#     if 'gold_cot' in item.keys():
-#         del item['gold_cot']
-# result_path = f"../result/{dataset}/{model_name}/{method}_e{n_examples}_s{n_samples}.json"
-# with open(result_path, 'w') as f:
-#     json.dump(result_data, f, indent=4)
-#     f.close()
+#     # cot_data = load_json_data(cot_path)[:-1]
+#     # direct_data = load_json_data(direct_path)[:-1]
+    
+#     # direct_dic = {item['id']:item['cor_flag'] for item in direct_data}
+#     # result_dic = {False:{False:0, True:0}, True:{False:0, True:0}}
+#     # # result_dic = {False:{False:{False:0, True:0, None:0}, True:{False:0, True:0, None:0}}, True:{False:{False:0, True:0, None:0}, True:{False:0, True:0, None:0}}}
+#     # for item in cot_data:
+#     #     # result_dic[direct_dic[item['id']]][item['cor_flag']][item['cot_flg']] += 1
+#     #     result_dic[direct_dic[item['id']]][item['cor_flag']] += 1
+#     # print(result_dic)
+#     sc_data = load_json_data(sc_path)[:-1]
+#     cnt = 0
+#     correct = 0
+#     results = []
+#     for item in sc_data:
+#         answer = []
+#         for res in item['response']:
+#             ans = extract_answer(dataset, res)
+#             answer.append(ans)
+#         pred = max(answer, key=answer.count)
+#         corrects = [is_equiv(ans, item['label']) for ans in answer]
+#         cor_flag = is_equiv(pred, item['label'])
+#         item = {'id':item['id'], 'question':item['question'], 'reason':item['reason'], 'response':item['response'], 'answer':answer, 'pred':pred, 'label':item['label'], 'corrects':corrects, 'cor_flag':cor_flag}
+#         correct += int(cor_flag)
+#         results.append(item)
+#         cnt += 1
+#     results.append({'acc':correct/cnt})
+
+# from utils.load_data import extract_answer, load_json_data, write_json_data
+# path = '/mnt/userdata/ljc/code/faithful_cot/result/prontoqa/Gemma2_9b_chat/cot_e3_200.json'
+# # def create()
+
+# # result_dir =  f'./result/{dataset}/'
+# # all_paths = list_all_files(result_dir)
+# # for path in all_paths:
+# #     if 'eval' in path:
+# #         continue
+# #     data = load_json_data(path)
+# data = load_json_data(path)
+# cor = 0
+# cnt = 0
+# for item in data:
+#     if 'acc' in item.keys():
+#         item['acc'] = cor / cnt 
+#         break
+    
+#     answer = extract_answer('prontoqa', item['response'])
+#     if answer and answer.lower() == item['label'].lower():
+#         cor_flag = True
+#         cor += 1
+#     else:
+#         cor_flag = False
+#     item['cor_flag'] = cor_flag
+#     item['answer'] = answer 
+#     cnt += 1
+# write_json_data(path, data)
 
 
-# path = f"../result/{dataset}/{model_name}/{method}_e{n_examples}_s{n_samples}.json"
-# # with open(path, 'r') as f:
-# #     data = json.load(f)[:-1]
-# #     f.close()
-# # cot_flag_dic = {item['id']:item['cot_flag'] for item in data}
+from utils.load_data import load_json_data, extract_answer, write_json_data
+# from utils.eval import is_equiv
+import os
+import numpy as np 
+import random 
+random.seed(17)
 
-# # path = "../result/prontoqa_d2/Mistral_7b/cot_Mistral_7b_pcot_paths_e3_s100.json"
-# # with open(path, 'r') as f:
-# #     result_data = json.load(f)[:-1]
-# #     f.close() 
+def list_all_files(directory):
+    file_paths = []
+    for root, _, files in os.walk(directory):
+        for file in files:
+            file_paths.append(os.path.join(root, file))
+    return file_paths
 
-# # i = 0
-# # for item in result_data[:-1]:
-# #     if not item['cot_flag']:
-# #         item['cot_flag'] = cot_flag_dic[item['id']]
 
-# # with open(path, 'w') as f:
-# #     json.dump(result_data, f, indent=4)
-# #     f.close()
-
-# for model in ['Llama2_13b', 'Mistral_7b']:
-#     for dataset in ['proofwriter_d1', 'prontoqa_d2']:
-#         path = f"../result/{dataset}/{model}/cot_e3_s100.json"
-#         with open(path, 'r') as f:
-#             data = json.load(f)[:-1]
-#             f.close()
-#         dic = {'Val->C':0, 'Ival->W':0, 'Val->W':0, 'Ival->C':0}
-#         for item in data:
-#             if item['cor_flag'] and item['cot_flag'] in [0,1]:
-#                 dic['Val->C'] += 1
-#             elif item['cor_flag'] and item['cot_flag'] in [2,3]:
-#                 dic['Ival->C'] += 1
-#             elif not item['cor_flag'] and item['cot_flag'] in [0,1]:
-#                 dic['Val->W'] += 1
-#             else:
-#                 dic['Ival->W'] += 1
-#         print(f'{model}\t{dataset}:')
-#         for k, v in dic.items():
-#             print(f"{k}:{v}")
+def get_acc(result:list[dict], n_samples:int, method:str) -> list[dict]:
+    cor_flag = 0
+    if method == 'bridge':
+        ind1 = random.choice([0,1,2])
+        ind2 = random.choice([3,4,5])
+        ind3 = random.choice([6,7,8])
+        index = [ind1, ind2, ind3]
+    elif method == 'sc':
+        index = random.sample(range(10), n_samples)
+    else:
+        index = range(0,n_samples)
+    new_results = []
+    for item in result:
+        if method == 'cot':
+            index = random.sample(range(3), n_samples)
+        # print(item['response'])
+        # if len(item['response']) == 6:
+        responses = item['response']
+        answers = item['answer']
+        corrects = item['corrects']
+        # else:
+        # responses = [item['response'][idx] for idx in index]
+        # answers = [item['answer'][idx] for idx in index]
+        # corrects = [item['corrects'][idx] for idx in index]
+        if method == 'cot':
+            responses = responses[0]['content']
+            answers = answers[0]
+            corrects = corrects[0]
+            cor = corrects
+            cor_flag += int(cor)
+            pred = answers
+        elif method == 'sc' or method == 'bridge_ig':
+            best_idx = answers.index(max(answers, key=answers.count))
+            pred = answers[best_idx]
+            cor = corrects[best_idx]
+            if cor:
+                cor_flag += int(cor)
+            else:
+                cor = False
+                cor_flag += 0
+        elif method == 'bridge':
+            scores = [item['score'] for item in responses]
+            coef = {}
+            for i in range(len(scores)):
+                if not answers[i]:
+                    continue
+                if answers[i] not in coef.keys():
+                    coef[answers[i]] = scores[i]
+                else:
+                    coef[answers[i]] += scores[i]
+            if not coef:
+                pred = None
+                cor = False 
+            else:
+                pred = max(coef, key=lambda x: coef[x])
+                cor = pred.lower() == item['label'].lower()
+                cor_flag += int(cor)
+            
+            # elif method == 'mcts':
+            #     best_idx = max(enumerate(responses), key=lambda x: x[1]['reward'])[0]
+            #     cor_flag += int(corrects[best_idx])
+        new_results.append({'id':item['id'], 'response':responses, 'answer':answers, 'corrects':corrects, 'cor_flag':cor, 'label':item['label'], 'reason':item['reason'], 'pred':pred})
+    new_results.append({'acc':cor_flag / len(result)})
+    return new_results
+# 'bridge_aae', 'bridge_ig'
+# 示例用法
+methods = ['bridge_ig']
+datasets = ['prontoqa', 'proofwriter']
+models = ['Gemma2_9b_chat']
+for dataset in datasets:
+    for model in models:
+        for method in methods:
+            if method == 'cot':
+                new_path = f'../result/{dataset}/{model}/cot_500.json'
+                # if os.path.exists(new_path):
+                #     continue
+                old_path = f'../result/{dataset}/{model}/sc3_e3_500.json'
+                new_result = get_acc(load_json_data(old_path)[:-1], 1, 'cot')
+                write_json_data(new_path, new_result)
+            elif method == 'sc':
+                new_path = f'../result/{dataset}/{model}/sc3_e3_200.json'
+                # if os.path.exists(new_path):
+                #     continue
+                old_path = f'../result/{dataset}/{model}/sc10_e3_200.json'
+                new_result = get_acc(load_json_data(old_path)[:-1], 3, 'sc')
+                write_json_data(new_path, new_result)
+            elif method == 'bridge':
+                new_path = f'../result/{dataset}/{model}/bridge_200.json'
+                old_path = f'../result/{dataset}/{model}/bridge3_sc3_w1_e3_200.json'
+                new_result = get_acc(load_json_data(old_path)[:-1], 9, 'bridge')
+                write_json_data(new_path, new_result)
+            elif method == 'bridge_ig':
+                new_path = f'../result/{dataset}/{model}/bridge_wo_ig_200.json'
+                old_path = f'../result/{dataset}/{model}/bridge_200.json'
+                new_result = get_acc(load_json_data(old_path)[:-1], 3, 'bridge_ig')
+                write_json_data(new_path, new_result)

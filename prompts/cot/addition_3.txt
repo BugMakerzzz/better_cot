@@ -1,4 +1,4 @@
-Please act as a math teacher and reason step by step to solve the addition problem.
+Please act as a math teacher, directly answer the question and give the explanation.
 ####
 # Context:
 8 + 5 = 13. 4 + 9 = 13. 8 + 1 = 9. 5 + 1 = 6. 2 + 1 = 3. 4 + 2 = 6. 1 + 6 = 7. 5 + 5 = 10. 8 + 0 = 8. 6 + 1 = 7. 6 + 2 = 8. 9 + 6 = 15.

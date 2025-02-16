@@ -1,0 +1,48 @@
+Please act as a commonsense teacher and solve the commonsense reasoning problem.  You should not generate any explanation or reason and must directly give the final answer.
+####
+# Context:
+Computer store is a store that sells computers and its peripherals to the small businessperson or personal user. Computer store is a store that sells computers and is not another name for a disk for storing information. Computer to store data means a way of keeping information in the memory storage for use by a computer. Computer to store data is a way of keeping information and not the disk for storing information. Cd player is an electronic device that plays audio compact discs, which are a digital optical disc data storage format. Cd player is an electronic device that plays audio compact discs and is not another name for a disk for storing information. USB mouse is the optical mouse that connects to the USB port. USB mouse is a type of mouse and not another name for a disk for storing information. Computer hard drive is another name for a disk for storing information. Computer hard drive is an electro-mechanical data storage device that uses magnetic storage to store and retrieve digital data using one or more rigid rapidly rotating platters coated with magnetic material.
+# Question:
+What is another name for a disk for storing information?
+# Options:
+A) computer store
+B) computer to store data
+C) computer hard drive
+D) cd player
+E) usb mouse
+# Answer:
+The answer is: C
+####
+# Context:
+Furniture store is not a place to study. Church is not a place to study. One works towards an advanced degree in a university. University is a place of study. One does not work towards an advanced degree in the living room. Airport is not a place to study. One sits in a chair in a university.
+# Question:
+Where would you sit in a chair while working toward an advanced degree?
+# Options:
+A) aeroport
+B) church
+C) furniture store
+D) university
+E) living room
+# Answer:
+The answer is: D
+####
+# Context:
+Janitors are found in a synagouge. Obesity is not a place. Front porch is area in home where usually janitor is not found. Synagouge is a place of worship and hence most people do not throw rubbish there for janitor to clean. A synagouge is a place where people may drop a few papers. Grocery store is a place where janitor has a lot of things to clean. Classrooms have a lot for janitors to clean.
+# Question:
+The janitor never had much to clean after services, but there was still always a paper or two to pick up where?
+# Options:
+A) synagouge
+B) front porch
+C) classroom
+D) obesity
+E) grocery store
+# Answer:
+The answer is: A
+####
+# Context:
+{{context}}
+# Question:
+{{question}}
+# Options:
+{{options}}
+# Answer:

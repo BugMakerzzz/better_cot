@@ -1,0 +1,31 @@
+Please act as a commonsense teacher and solve the commonsense reasoning problem.  You should not generate any explanation or reason and must directly give the final answer.
+####
+# Question:
+Donald was very grounded but Michael often got lost in their daydreams. _ was very capricious all the time.
+# Options:
+(A) Donald
+(B) Michael
+# Answer:
+The answer is: B
+####
+# Question:
+The test was hard for Samuel but a breeze for Randy , since _ had failed to study for it.
+# Options:
+(A) Samuel
+(B) Randy
+# Answer:
+The answer is: A
+####
+# Question:
+Jeffrey was sick with the stomach flu and not hungry, but Christopher was starving. _ ordered food.
+# Options:
+(A) Jeffrey
+(B) Christopher
+# Answer:
+The answer is: B
+####
+# Question:
+{{question}}
+# Options:
+{{options}}
+# Answer:

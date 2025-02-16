@@ -1,0 +1,46 @@
+Please act as a commonsense teacher, directly answer the question and give the explanation.
+####
+# Question:
+Google Maps and other highway and street GPS services have replaced what?
+# Options:
+(A) atlas
+(B) mexico
+(C) countryside
+(D) united states
+(E) oceans 
+# Answer:
+The answer is: A
+# Explanation:
+Electronic maps and GPS services are the modern version of paper atlas. In that case, the atlas have been replaced by Google Maps and other highway and street GPS services.
+####
+# Question:
+You can share files with someone if you have a connection to a what?
+# Options:
+(A) freeway
+(B) radio
+(C) wires
+(D) computer network
+(E) electrical circuit
+# Answer:
+The answer is: D
+# Explanation:
+Files usually can be stored in the computers. In that case, we can share them over the Internet. Thus, if we connect to a computer network, we can share the file with others.
+####
+# Question:
+The fox walked from the city into the forest, what was it looking for? 
+# Options:
+(A) pretty flowers
+(B) hen house 
+(C) natural habitat 
+(D) storybook 
+(E) dense forest 
+# Answer:
+The answer is: C
+# Explanation:
+Since the fox walk from the city into the forest, he may looks for something in the forest but not in the city. From all of the options, the natural habitat are usually away from cities.
+####
+# Question:
+{{question}}
+# Options:
+{{options}}
+# Answer:

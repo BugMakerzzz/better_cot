@@ -1,4 +1,4 @@
-Please act as a symbolic teacher and reason step by step to solve the symbolic reasoning problem Given a context and a question, explain your reasoning process and give the answer.
+Please act as a symbolic teacher and give the answer.  You should not generate any explanation or reason and must directly give the final answer.
 ####
 # Context:
 A coin is heads up. Tyler flips the coin. Isabella flips the coin. Serenity does not flip the coin. Wyatt does not flip the coin. Skylar does not flip the coin. Peyton does not flip the coin. Isaac flips the coin. Riley flips the coin. Brielle flips the coin. Gabriella does not flip the coin.

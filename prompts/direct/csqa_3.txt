@@ -1,0 +1,40 @@
+Please act as a commonsense teacher and solve the commonsense reasoning problem.
+####
+# Question:
+Google Maps and other highway and street GPS services have replaced what?
+# Options:
+(A) atlas
+(B) mexico
+(C) countryside
+(D) united states
+(E) oceans 
+# Answer:
+The answer is: A
+####
+# Question:
+You can share files with someone if you have a connection to a what?
+# Options:
+(A) freeway
+(B) radio
+(C) wires
+(D) computer network
+(E) electrical circuit
+# Answer:
+The answer is: D
+####
+# Question:
+The fox walked from the city into the forest, what was it looking for? 
+# Options:
+(A) pretty flowers
+(B) hen house 
+(C) natural habitat 
+(D) storybook 
+(E) dense forest 
+# Answer:
+The answer is: C
+####
+# Question:
+{{question}}
+# Options:
+{{options}}
+# Answer:

@@ -1,0 +1,27 @@
+Please act as a match teacher, directly answer the question and give the explanation.
+####
+# Question:
+Mrs. Tatiana owns a grocery store that sells different fruits and vegetables, which includes carrots. The price of carrots in the grocery store increases by 5% of the original price every year. In the fourth year, however, the price of carrots increased by 10% of the original price. What would be the price of carrots after four years if it was $120 initially? (Round to the nearest integer)
+# Answer:
+The answer is: 150.
+# Explanation:
+In the first year, the price of carrots increases by 5/100*120 = $<<5/100*120=6>>6\nAfter 3 years, the price of carrots will increase by $6*3 = $<<6*3=18>>18\nIn the fourth year, the price of carrots will increases by 5/100*120=12\nThe total price of carrots after four years will be 120+18 +12= $<<120+18+12=150>>150.
+####
+# Question:
+Emma is a vlogger who can make and upload 72 vlogs per month. However, in the first week of the month, she was only able to make 18 vlogs. In the second week, she made 21 vlogs, and in the third week, she made 15 vlogs. In addition to this, she also wants to make 10% more vlogs than her usual monthly target to compensate for a previous month where she fell short. Considering her current progress and her new target, how many vlogs should she make in the fourth week to reach her adjusted goal for the month?
+# Answer:
+The answer is: 26.
+# Explanation:
+Emma's usual monthly target is 72 vlogs, but she wants to make 10% more this month. So, her new target is 72 + 72*10/100 = 72 + 7.2 = 79.2 vlogs. Since it's not possible to make a fraction of a vlog, we'll round this up to 80 vlogs.\n\nIn the first three weeks, she made 18 + 21 + 15 = 54 vlogs.\n\nSo, in the fourth week, she needs to make 80 - 54 =  26 vlogs to reach her adjusted goal for the month.
+####
+# Question:
+A large bag of Starburst candy has 232 pieces of individually wrapped candies. If this bag has 54 red candies, twice that amount of orange candies, half as many yellow candies as red candies, and 1/3 as many green candies as red candies, how many candies are pink?
+# Answer:
+The answer is: 25.
+# Explanation:
+There are 54 red candies and twice that amount of orange candies for a total of 54*2 = <<54*2=108>>108 candies\nThe yellow candies are half the amount of the 54 red candies so there are 54/2 = <<54/2=27>>27 candies\nThe green candies are 1/3 of the amount of the 54 red candies so there are 54/3 = <<54/3=18>>18 candies\nAll total there are 54 red candies, 108 orange candies, 27 yellow candies and 18 green candies so 54+108+27+18 = <<54+108+27+18=207>>207 candies\nThe bag has 232 candies and the red, orange and yellow candies total 207 pieces so there are 232-207 = <<232-207=25>>25 pink candies.
+####
+# Question:
+{{question}}
+# Answer:
+

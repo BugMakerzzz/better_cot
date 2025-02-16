@@ -9,7 +9,7 @@ Quinn wanted to help me clean my room up because it was so messy. What will Quin
 # Reasoning:
 Quinn want to clean the room up. Picking up the dirty clothes is one way to clean the room. Thus, quinn will want to pick up the dirty clothes next.
 # Answer:
-The correct option is: C
+The answer is: C
 ####
 # Question:
 Sydney had so much pent up emotion, they burst into tears at work. How would Sydney feel afterwards?
@@ -20,7 +20,7 @@ Sydney had so much pent up emotion, they burst into tears at work. How would Syd
 # Reasoning:
 Crying is often a way to release tension. Sydney burst into tears at work. Thus, she would release the tension.
 # Answer:
-The correct option is: B
+The answer is: B
 ####
 # Question:
 Their cat kept trying to escape out of the window, so Jan placed an obstacle in the way. How would Jan feel afterwards?
@@ -31,7 +31,7 @@ Their cat kept trying to escape out of the window, so Jan placed an obstacle in 
 # Reasoning:
 The cat try to escape so Jan need to stop it to avoid losing the cat. Jan place an obstacle in the way so the cat can not escape. The problem is been solved. Thus, Jan will fell relieved for fixing the problem.
 # Answer:
-The correct option is: C
+The answer is: C
 ####
 # Question:
 {{question}}

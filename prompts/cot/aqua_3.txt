@@ -11,7 +11,7 @@ E)23
 # Reasoning:
 If Q complete x kilometers, then P completes 1.15x kilometers. x + 1.15x = 43. 2.15x=43. x = 43/2.15 = 20. Then P will have have walked 1.15*20=23 km.
 # Answer:
-The correct option is: E
+The answer is: E
 ####
 # Question:
 In the coordinate plane, points (x, 1) and (5, y) are on line k. If line k passes through the origin and has slope 1/5, then what are the values of x and y respectively?
@@ -24,7 +24,7 @@ E)5 and 3
 # Reasoning:
 Line k passes through the origin and has slope 1/5 means that its equation is y=1/5*x. Thus: (x, 1)=(5, 1) and (5, y) = (5,1) -->x=5 and y=1.
 # Answer:
-The correct option is: C
+The answer is: C
 ####
 # Question:
 Carl is facing very difficult financial times and can only pay the interest on a $10,000 loan he has taken. The bank charges him a quarterly compound rate of 4%. What is the approximate interest he pays annually?
@@ -37,7 +37,7 @@ E)$12000
 # Reasoning:
 Here you find per quarter rate as (16/4)% = 4%. So the bank charges 4% every quarter and compounds it in the next quarter. Had it been a simple quarterly rate, we would have just found 4 * 4% of 10,000 = $1600 as our answer. But since, the interest is compounded, it will be a bit more than $1600.
 # Answer:
-The correct option is: A
+The answer is: A
 ####
 # Question:
 {{question}}

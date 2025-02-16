@@ -7,7 +7,11 @@ Based on the above information, is the following statement true, false, or unkno
 # Options:
 A) True
 B) False
-# Old Reasoning:
+# Former Reasoning:
+Anne is round. So Gary is round.
+# Feedback:
+The reasoning is wrong, since there is no statement in the context supporting the reasoning from 'Anne is round' to 'Gary is round'.
+# Reasoning:
 Gary is smart. Gary is furry. Smart, furry things are round. So Gary is round.
 # Answer:
 The correct option is: A
@@ -19,6 +23,10 @@ Based on the above information, is the following statement true, false, or unkno
 # Options:
 A) True
 B) False
+# Former Reasoning:
+The squirrel is blue. If someone is blue then they like the bear. So The squirrel likes the bear.
+# Feedback:
+The reasoning is correct.
 # Reasoning:
 The squirrel is blue. If someone is blue then they like the bear. So The squirrel likes the bear.
 # Answer:
@@ -31,6 +39,10 @@ Based on the above information, is the following statement true, false, or unkno
 # Options:
 A) True
 B) False
+# Former Reasoning:
+Harry is young. Young things are not blue. So Harry is not blue.
+# Feedback:
+The reasoning is wrong, since the statement 'Harry is young' not in the context.
 # Reasoning:
 Harry is smart. If something is smart then it is blue. So Harry is blue.
 # Answer:
@@ -42,4 +54,8 @@ The correct option is: B
 {{question}}
 # Options:
 {{options}}
+# Former Reasoning:
+{{reasoning}}
+# Feedback:
+{{feedback}}
 # Reasoning:

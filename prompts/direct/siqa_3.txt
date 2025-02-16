@@ -1,0 +1,34 @@
+Please act as a commonsense teacher and solve the commonsense reasoning problem.  You should not generate any explanation or reason and must directly give the final answer.
+####
+# Question:
+Quinn wanted to help me clean my room up because it was so messy. What will Quinn want to do next?
+# Options:
+(A) Eat messy snacks
+(B) help out a friend
+(C) Pick up the dirty clothes
+# Answer:
+The answer is: C
+####
+# Question:
+Sydney had so much pent up emotion, they burst into tears at work. How would Sydney feel afterwards?
+# Options:
+(A) affected
+(B) like they released their tension
+(C) worse
+# Answer:
+The answer is: B
+####
+# Question:
+Their cat kept trying to escape out of the window, so Jan placed an obstacle in the way. How would Jan feel afterwards?
+# Options:
+(A) scared of losing the cat
+(B) normal
+(C) relieved for fixing the problem 
+# Answer:
+The answer is: C
+####
+# Question:
+{{question}}
+# Options:
+{{options}}
+# Answer:

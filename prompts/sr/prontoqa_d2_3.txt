@@ -1,0 +1,34 @@
+Please act as a logical teacher and reason step by step to solve the logical reasoning problem.
+####
+# Context:
+Each lorpus is not transparent. Every gorpus is slow. Sterpuses are gorpuses. Every lempus is angry. Every rompus is floral. Lempuses are lorpuses. Jompuses are brimpuses. Each wumpus is a tumpus. Each numpus is overcast. Gorpuses are yumpuses. Brimpuses are sterpuses. Every sterpus is a zumpus. Every wumpus is loud. Zumpuses are nervous. Each brimpus is not bright. Each gorpus is a dumpus. Jompuses are temperate. Each yumpus is red. Lempuses are jompuses. Jompuses are rompuses. Each brimpus is a numpus. Sterpuses are small. Sally is a jompus. Sally is a wumpus.
+# Question:
+True or false: Sally is bright.
+# Reasoning:
+Sally is a jompus. Jompuses are brimpuses. Sally is a brimpus. Each brimpus is not bright. Sally is not bright.
+# Answer:
+The reasoning is correct.
+####
+# Context:
+Lempuses are tumpuses. Every sterpus is a grimpus. Each sterpus is an impus. Jompuses are sterpuses. Every zumpus is dull. Each sterpus is not muffled. Jompuses are not slow. Each grimpus is a yumpus. Every dumpus is rainy. Grimpuses are dumpuses. Jompuses are zumpuses. Each lempus is transparent. Every grimpus is not cold. Each impus is small. Wren is a jompus. Wren is a lempus.
+# Question:
+True or false: Wren is not muffled.
+# Reasoning:
+Wren is a zumpus. Zumpus are tumpuses. Wren is a tumpuses. Each tumpuses is not muffled. Wren is not muffled.
+# Answer:
+The reasoning is wrong, since the statement 'Wren is a zumpus' and 'Zumpus are tumpuses' not in the context.
+####
+# Context:
+Each yumpus is a sterpus. Yumpuses are not earthy. Every dumpus is not sour. Lempuses are not overcast. Every impus is a grimpus. Sterpuses are lorpuses. Sterpuses are not hot. Every yumpus is a dumpus. Impuses are happy. Every sterpus is a lempus. Polly is a yumpus. Polly is an impus.
+# Question:
+True or false: Polly is not hot.
+# Reasoning:
+Polly is a yumpus. Each yumpus is hot. Polly is hot.
+# Answer:
+The reasoning is wrong, since the statement 'Each yumpus is hot' not in the context.
+####
+# Context:
+{{context}}
+# Question:
+{{question}}
+# Reasoning:

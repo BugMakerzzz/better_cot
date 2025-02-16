@@ -1,0 +1,35 @@
+Please act as a logical teacher to select the best response from the candidate set.
+####
+I have generated the following responses to the question: 
+# Question:
+Every numpus is red. Brimpuses are zumpuses. Grimpuses are gorpuses. Each yumpus is a numpus. Each yumpus is a brimpus. Every yumpus is hot. Lempuses are not earthy. Every lempus is a rompus. Grimpuses are overcast. Grimpuses are yumpuses. Brimpuses are melodic. Each gorpus is feisty. Brimpuses are sterpuses. Sterpuses are sweet. Fae is a yumpus. Fae is a lempus. True or false: Fae is hot.
+# Reponses:
+Response 0: Fae is a yumpus. Fae is a numpus. Numpuses are hot. Fae is hot.\n# Answer:\nThe answer is: True.
+Response 1: Fae is a yumpus. Numpuses are not hot. Fae is not hot.\n# Answer:\nThe answer is: False.
+Response 2: Fae is a yumpus. Every yumpus is hot. Fae is hot.\n# Answer:\nThe answer is: True.
+# Answer:
+Response 2
+####
+# Question:
+Each rompus is a lorpus. Every shumpus is muffled. Each gorpus is red. Every lempus is transparent. Rompuses are lempuses. Each shumpus is a wumpus. Each rompus is not cold. Every lorpus is a numpus. Lorpuses are gorpuses. Each lorpus is large. Max is a rompus. Max is a shumpus. True or false: Max is cold.
+# Reponses:
+Response 0: Max is a rompus. Each rompus is not cold. Max is not cold.\n# Answer:\nThe answer is: False.
+Response 1: Max is a rompus. Max is a shumpus. Lempuses are transparent. Max is transparent. Max is not cold.\n# Answer:\nThe answer is: False.
+Response 2: Max is a rompus. Each rompus is a lorpus. Max is cold.\n# Answer:\nThe answer is: True.
+# Answer:
+Response 0
+####
+# Question:
+Each shumpus is transparent. Every jompus is amenable. Each wumpus is fast. Each lempus is a yumpus. Every lempus is metallic. Every sterpus is a shumpus. Sterpuses are earthy. Every sterpus is a jompus. Jompuses are wumpuses. Jompuses are tumpuses. Rex is a sterpus. Rex is a lempus. True or false: Rex is not amenable.
+# Reponses:
+Response 0: Rex is a sterpus. Jompuses are wumpuses. Rex is a wumpus. Wumpuses are rompuses. Shumpuses are not amenable. Rex is not amenable.\n# Answer:\nThe answer is: True.
+Response 1: Rex is a sterpus. Every sterpus is a jompus. Rex is a jompus. Every jompus is amenable. Rex is amenable.\n# Answer:\nThe answer is: False.
+Response 2: Rex is a sterpus. Sterpuses are jompuses. Rex is a jompus. Jompuses are wumpuses. Rex is a wumpus. Wumpuses are rompuses. Rex is a rompus. Rompuses are shumpuses. Rex is a shumpus. Shumpuses are amenable. Rex is amenable.\n# Answer:\nThe answer is: False.
+# Answer:
+Response 1
+####
+# Question:
+{{question}}
+# Reponses:
+{{response}}
+# Answer:

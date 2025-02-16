@@ -1,0 +1,37 @@
+Please act as a commonsense teacher, directly answer the question and give the explanation.
+####
+# Question:
+Donald was very grounded but Michael often got lost in their daydreams. _ was very capricious all the time.
+# Options:
+(A) Donald
+(B) Michael
+# Answer:
+The answer is: B
+# Explanation:
+A person is grounded means he works hard and does not like to fantasize. A person often gets lost in his daydreams, he is seen as unrealistic and egocentric. A person is capricious all the time means he does everything only according to his own ideas. Since Michael often gets lost in their daydreams but Donald does not, Michael is seen as very capricious all the time.
+####
+# Question:
+The test was hard for Samuel but a breeze for Randy , since _ had failed to study for it.
+# Options:
+(A) Samuel
+(B) Randy
+# Answer:
+The answer is: A
+# Explanation:
+To pass a test, a person need to study for it. If a person feel the test like a breeze, it means the test is easy for him. A person feels the test easy, because he studies hard for it. Since we know that Samuel feel the test very hard, she may fail to study for it.
+####
+# Question:
+Jeffrey was sick with the stomach flu and not hungry, but Christopher was starving. _ ordered food.
+# Options:
+(A) Jeffrey
+(B) Christopher
+# Answer:
+The answer is: B
+####
+# Explanation:
+Stomach flu is a viral infection in the digestive system. A person is starve so that he need to eat something next. A person is not hungry means he does not want to eat something. Ordering food means to buy food online. A person may eat food after ordering it. Since Christopher was starving and Jeffery was sick and not hungry, Christopher tended to order food.
+# Question:
+{{question}}
+# Options:
+{{options}}
+# Answer:
