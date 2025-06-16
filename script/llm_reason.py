@@ -9,7 +9,7 @@ from tqdm import tqdm
 from utils.math_eval import is_equiv
 import random
 from bridge_reason import bridge_reason, cal_ig_score
-
+import time
 
 def sc_reason(model, inputs, nums=10, cache=None):
     if cache:
@@ -147,6 +147,7 @@ if __name__ == '__main__':
         else:
             sc_dic = None 
     cnt = 0
+    start_time = time.time()
     for item in tqdm(data):
         inputs = format_question(item['question'], split_str=split_str)
         # print(inputs)
@@ -216,7 +217,7 @@ if __name__ == '__main__':
         result.append(msg)
         cnt += 1
     result.append({'acc': correct / cnt})
-        
+    end_time = time.time()  
     result_dir = f'../result/{dataset}/{model_name}/'
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
@@ -239,3 +240,4 @@ if __name__ == '__main__':
     with open(result_path, 'w') as f:
         json.dump(result, f, indent=4)
         f.close()
+    print(f"代码运行时间: {end_time - start_time} 秒")
