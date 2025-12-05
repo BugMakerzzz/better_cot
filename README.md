@@ -20,6 +20,24 @@ cd better_cot
 pip install -r requirements.txt
 ```
 
+### Measuring CoT Faithfulness
+
+```python
+./script/measure_faith.sh
+```
+
+### Measuring Information Flow between Different Components
+
+```python
+./script/measure_info.sh
+```
+
+### Run the QUIRE Method
+
+```python
+./script/llm_reason.sh
+```
+
 
 
 If you find our dataset and analysis beneficial, please cite our work:

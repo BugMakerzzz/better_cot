@@ -31,21 +31,6 @@ def cal_ig(model, question, cot, pred):
     return cot_ent, cond_ent, cot_ent - cond_ent
 
 def calculate_aoc(x_coords, y_coords):
-    """
-    计算折线与水平直线 y=a 之间的面积（只计算位于 y=a 线下的部分）。
-    
-    参数:
-    x_coords : list of floats
-        折线的 x 坐标列表。
-    y_coords : list of floats
-        折线的 y 坐标列表。
-    a : float
-        水平直线 y=a 的值。
-    
-    返回值:
-    float
-        折线与水平线之间的面积。
-    """
     total_area = 0.0
     a = y_coords[-1]
     # 遍历每个折线段 (x1, y1) 到 (x2, y2)
